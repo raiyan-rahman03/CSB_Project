@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Out</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+  <style>
+    /* Custom styles for this template */
+    body {
+      padding-top: 5rem;
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+    }
+
+    .container {
+      max-width: 500px;
+      padding: 30px;
+      border-radius: 10px;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      margin: auto;
+      margin-top: 50px;
+    }
+
+    .logout-content {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .logout-content h1 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .logout-content p {
+      color: #555;
+      margin-bottom: 30px;
+    }
+
+    .logout-form button {
+      background-color: #dc3545;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      width: 100%;
+      transition: background-color 0.3s ease;
+    }
+
+    .logout-form button:hover {
+      background-color: #c82333;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logout-content">
+      <h1>Sign Out</h1>
+      <p>Are you sure you want to sign out?</p>
+    </div>
+
+    <form class="logout-form" method="post" action="/accounts/logout/">
+      {% csrf_token %}
+      <button type="submit">Sign Out</button>
+    </form>
+  </div>
+</body>
+</html>
