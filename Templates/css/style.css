@@ -1,0 +1,197 @@
+/* ---------------- Global Classes ---------------- */
+:root {
+    --main-bg: #fff;
+    --second-bg:  #00c6a9;
+    --main-color: #6d6d6d;
+    --secondary-color: #000;
+    --extra-color: #252525;
+}
+
+html,
+body {
+    margin: 0%;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    background: var(--main-bg);
+    color: var(--main-color);
+    font-family:  "Lato", sans-serif;
+}
+
+ul li {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+    color: var(--main-bg);
+}
+
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+.flex-column {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+
+.container {
+    padding: 10% 5%;
+}
+
+.container:first-child {
+    padding: 1% 5%;
+}
+
+.space_around{
+    justify-content: space-around;
+}
+.space_between{
+    justify-content: space-between;
+}
+.two-side-div{
+    width: 50%;
+}
+
+.btn{
+    padding: 0.75rem 2rem;
+    border: none;
+    background-color: var(--main-color);
+}
+
+
+/* --------X-------- Global Classes --------X-------- */
+
+
+
+
+
+
+/* ---------------- NavBar ---------------- */
+nav{
+    background-color: var(--second-bg);
+}
+nav ul li{
+    padding: 1rem;
+}
+.logo{
+    font-size: 3rem;
+    margin-top: 16px;
+}
+.icon-show-off{
+    display: none;
+    margin: 1rem;
+}
+.icon-show-off span{
+    font-size: 3rem;
+}
+
+
+
+@media only screen and (max-width: 768px) {
+    nav .container{
+        text-align: center;
+    }
+    .nav-item ul, .user ul{
+        flex-direction: column;
+    }
+    .icon-show-off{
+        display: block;
+    }
+    .nav-item, .user{
+        display: none;
+    }
+    .logo{
+        text-align: left;
+    }
+    .logo-icon-wrapper{
+        width: 100%;
+    }
+}
+@media only screen and (max-width: 868px){
+    nav ul li{
+        padding: 0.25rem;
+    }
+} 
+
+/* --------X-------- NavBar --------X-------- */
+
+.content-side{
+    margin: 8rem 0rem;
+}
+.content-side h1{
+    font-size: 3rem;
+}
+
+.content-side p{
+    margin: 3rem 1rem 3rem 0rem;
+}
+
+.image-side img{
+    width: 100%;
+}
+
+
+@media only screen and (max-width: 768px) {
+    .header{
+        flex-direction: column;
+    }
+    .two-side-div{
+        width: 100%;
+    }
+}
+
+
+
+
+.book-apoinment-wrapper{
+    border: 1px solid black;
+}
+
+
+
+.top-write{
+    text-align: center;
+    margin-bottom: 8rem;
+}
+
+
+.single-service{
+    width: 25%;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.single-doctor{
+    width: 80%;
+    height: 75%;
+    border: 1px solid black;
+    padding: 1rem;
+    text-align: center;
+}
+
+.doctor-image{
+    width: 90%;
+    height: 75%;
+    overflow: hidden;
+    position: relative;
+    top: -5%;
+    left: 5%;
+}
+.doctor-image img{
+    width: 100%;
+}
