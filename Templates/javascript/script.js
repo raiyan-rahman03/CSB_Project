@@ -25,7 +25,7 @@ function toggleContent() {
     const navContainer = document.querySelector('nav .container');
 
     const isContentVisible = navItem.style.display === 'block';
-
+    document.querySelector('nav').style.height = isContentVisible ? '15%' : '100%';
     navItem.style.display = isContentVisible ? 'none' : 'block';
     user.style.display = isContentVisible ? 'none' : 'block';
     navContainer.style.flexDirection = isContentVisible ? 'row' : 'column';

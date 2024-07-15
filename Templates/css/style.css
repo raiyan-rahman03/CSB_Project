@@ -72,8 +72,14 @@ a {
 
 /* ---------------- NavBar ---------------- */
 nav{
+    position: fixed;
     background-color: var(--second-bg);
+    width: 100%;
+    height: 15%;
 }
+
+
+
 nav ul li{
     padding: 1rem;
 }
@@ -194,4 +200,155 @@ nav ul li{
 }
 .doctor-image img{
     width: 100%;
+}
+
+
+
+footer{
+    text-align: center;
+    background-color: var(--second-bg);
+}
+.about-us-footer ul{
+    margin: auto;
+    width: 50%;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#all-chat{
+    position: fixed;
+    top: 15%;
+    width: 25%;
+    height: 85%;
+    overflow: hidden;
+    border: 1px solid black;
+}
+
+.single-chat-acc{
+    width: 100%;
+    border: 1px solid black;
+    margin: 1rem 0rem;
+}
+
+.single-chat-image{
+    width: 50px;
+    height: 50px;
+    overflow: hidden;
+    border-radius: 100%;
+    margin: 1rem 2rem;
+}
+.single-chat-image img{
+    width: 100%;
+}
+
+
+#msg-option{
+    position: fixed;
+    width: 75%;
+    left: 25%;
+    top: 15%;
+}
+.messege-header{
+    height: 6rem;
+    overflow: hidden;
+    border: 1px solid black;
+    position: fixed;
+    width: 100%;
+}
+
+.message-header-image{
+    width: 50px;
+    height: 50px;
+    overflow: hidden;
+    border-radius: 100%;
+    margin: 1rem 2rem;
+}
+.message-header-image img{
+    width: 100%;
+}
+
+
+.sent-msg{
+    position: fixed;
+    bottom: 1%;
+    width: 100%;
+}
+.sent-msg input{
+    width: 40rem;
+    height: 3rem;
+    margin: 1rem;
+}
+.sent-msg button{
+    padding: 1rem 2rem;
+}
+.sent-msg div{
+    width: 85%;
+    margin: auto;
+}
+
+
+
+.all-msg {
+    position: absolute;
+    top: 6rem;
+    width: 100%;
+    height: 60vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background: #6d6d6d;
+}
+.single-msg-full{
+    width: 100%;
+}
+.single-msg {
+    display: flex;
+    width: 50%;
+    overflow: hidden;
+    background-color: antiquewhite;
+    border: 1px solid black;
+    margin: 1rem 0;
+}
+
+.msg-image {
+    width: 50px;
+    height: 50px;
+    overflow: hidden;
+    border-radius: 100%;
+    margin: 1rem 2rem;
+}
+
+.msg-image img {
+    width: 100%;
+}
+
+.msges {
+    width: 75%;
+}
+
+.left-msg {
+    position: relative;
+    left: 1%;
+}
+
+.right-msg {
+    position: relative;
+    right: -49%;
 }
