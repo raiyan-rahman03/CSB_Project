@@ -1,0 +1,507 @@
+/* ---------------- Global Classes ---------------- */
+:root {
+    --main-bg: #f0f4f8; 
+    --second-bg: #ffffff; 
+    --main-color: #007bff; 
+    --secondary-color: #28a745; 
+    --extra-color: #6c757d; 
+}
+
+html,
+body {
+    margin: 0%;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    background: var(--main-bg);
+    color: var(--main-color);
+    font-family:  "Lato", sans-serif;
+}
+
+ul li {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+    color: var(--extra-color);
+}
+a:hover {
+    color:var(--secondary-color)
+}
+
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+.flex-column {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+
+.container {
+    padding: 10% 5%;
+}
+
+.container:first-child {
+    padding: 1% 5%;
+}
+
+.space_around{
+    justify-content: space-around;
+}
+.space_between{
+    justify-content: space-between;
+}
+.two-side-div{
+    width: 50%;
+}
+
+.btn{
+    padding: 0.75rem 2rem;
+    border: none;
+    background-color: var(--extra-color);
+    color: var(--second-bg);
+    border-radius: 0.75rem;
+    display: block;
+}
+.btn a{
+    color: var(--second-bg);
+}
+
+
+/* --------X-------- Global Classes --------X-------- */
+
+
+
+
+
+
+/* ---------------- NavBar ---------------- */
+nav{
+    position: fixed;
+    background-color: var(--second-bg);
+    width: 100%;
+    height: 15%;
+    border-bottom: 1px solid var(--extra-color);
+    z-index: 999;
+}
+
+
+
+nav ul li{
+    padding: 1rem;
+}
+.logo{
+    width: 50%;
+    overflow: hidden;
+}
+.logo img{
+    width: 100%;
+}
+
+.icon-show-off{
+    display: none;
+    margin: 1rem;
+}
+.icon-show-off span{
+    font-size: 3rem;
+}
+
+
+
+@media only screen and (max-width: 768px) {
+    nav .container{
+        text-align: center;
+    }
+    .nav-item ul, .user ul{
+        flex-direction: column;
+    }
+    .icon-show-off{
+        display: block;
+    }
+    .nav-item, .user{
+        display: none;
+    }
+    .logo{
+        text-align: left;
+    }
+    .logo-icon-wrapper{
+        width: 100%;
+    }
+}
+@media only screen and (max-width: 868px){
+    nav ul li{
+        padding: 0.25rem;
+    }
+} 
+
+/* --------X-------- NavBar --------X-------- */
+
+
+/* ---------------- Header ---------------- */
+
+
+
+.content-side{
+    margin: 8rem 0rem;
+}
+.content-side h1{
+    font-size: 3rem;
+}
+
+.content-side p{
+    margin: 3rem 1rem 3rem 0rem;
+    color: var(--extra-color);
+}
+
+.image-side img{
+    width: 100%;
+}
+
+
+@media only screen and (max-width: 768px) {
+    .header{
+        flex-direction: column;
+    }
+    .two-side-div{
+        width: 100%;
+    }
+}
+
+
+/* --------X-------- Header --------X-------- */
+
+
+
+
+/* ---------------- Book Apoinment ---------------- */
+
+.book-apoinment-wrapper{
+    border: none;
+    padding: 2rem;
+    background: linear-gradient(145deg, #e6e6e6, #ffffff);
+    box-shadow:  20px 20px 60px #d9d9d9,
+                 -20px -20px 60px #ffffff;
+}
+
+.book-apoinment-wrapper p{
+    color: var(--extra-color);
+    font-size: 1.1rem;
+}
+
+input {
+    width: 20rem;
+    height: 3rem;
+    border:none;
+}
+
+.details-appointment-line input[type="text"]{
+    width: 72rem;
+    height: 8rem;
+}
+
+
+/* --------X-------- Book Apoinment --------X-------- */
+
+/* ---------------- About Us ---------------- */
+#about-us h1{
+    color: var(--secondary-color);
+}
+#about-us{
+    background: var(--second-bg);
+}
+/* --------X-------- About Us --------X-------- */
+
+/* ---------------- Service ---------------- */
+
+.top-write{
+    text-align: center;
+    margin-bottom: 8rem;
+    font-size:2rem;
+}
+
+
+.single-service{
+    width: 25%;
+}
+
+.single-service h3{
+    color: var(--secondary-color);
+}
+.single-service p{
+    color: var(--extra-color);
+}
+/* --------X-------- Service --------X-------- */
+
+
+/* ---------------- Doctor ---------------- */
+
+#doctor{
+    background: var(--second-bg);
+}
+
+.single-doctor{
+    width: 16rem;
+    height: 18rem;
+    padding: 1rem;
+    text-align: center;
+    border-radius: 0.5rem;
+    background: linear-gradient(145deg, #d8dcdf, #ffffff);
+    box-shadow:  20px 20px 60px #cccfd3,
+             -20px -20px 60px #ffffff;
+}
+
+.doctor-image{
+    width: 100%;
+    height: 65%;
+    overflow: hidden;
+    position: relative;
+    border-radius: 0.5rem;
+}
+.doctor-image img{
+    width: 100%;
+}
+.single-doctor p{
+    color: var(--extra-color);
+}
+
+
+/* --------X-------- Doctor --------X-------- */
+
+/* ---------------- Contact Us ---------------- */
+#contuct-us input{
+    margin: 1rem 0;
+}
+input[type="textarea"]{
+    width: 30rem;
+    height: 8rem;
+}
+/* --------X-------- Contact Us --------X-------- */
+
+
+
+/* ---------------- Footer ---------------- */
+
+
+footer{
+    text-align: center;
+    background-color: var(--second-bg);
+}
+.footer{
+    padding: 5rem;
+}
+.footer h2{
+    color: var(--secondary-color);
+    font-size: 2rem;
+}
+.footer p{
+    color: var(--extra-color);
+    font-size: 1.1rem;
+}
+.footer i{
+    font-size: 1.5rem;
+}
+
+.about-us-footer ul{
+    margin: auto;
+    width: 50%;
+}
+
+.footer_copy{
+    margin: 5rem 0 0;
+    color: var(--extra-color);
+}
+
+/* --------X-------- Footer --------X-------- */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#all-chat{
+    position: fixed;
+    top: 15%;
+    width: 25%;
+    height: 85%;
+    overflow: hidden;
+    border: 1px solid black;
+}
+
+.single-chat-acc{
+    width: 100%;
+    border: 1px solid black;
+    margin: 1rem 0rem;
+}
+
+.single-chat-image{
+    width: 50px;
+    height: 50px;
+    overflow: hidden;
+    border-radius: 100%;
+    margin: 1rem 2rem;
+}
+.single-chat-image img{
+    width: 100%;
+}
+
+
+#msg-option{
+    position: fixed;
+    width: 75%;
+    left: 25%;
+    top: 15%;
+}
+.messege-header{
+    height: 6rem;
+    overflow: hidden;
+    border: 1px solid black;
+    position: fixed;
+    width: 100%;
+}
+
+.message-header-image{
+    width: 50px;
+    height: 50px;
+    overflow: hidden;
+    border-radius: 100%;
+    margin: 1rem 2rem;
+}
+.message-header-image img{
+    width: 100%;
+}
+
+
+.sent-msg{
+    position: fixed;
+    bottom: 1%;
+    width: 100%;
+}
+.sent-msg input{
+    width: 40rem;
+    height: 3rem;
+    margin: 1rem;
+}
+.sent-msg button{
+    padding: 1rem 2rem;
+}
+.sent-msg div{
+    width: 85%;
+    margin: auto;
+}
+
+
+
+.all-msg {
+    position: absolute;
+    top: 6rem;
+    width: 100%;
+    height: 60vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background: #6d6d6d;
+}
+.single-msg-full{
+    width: 100%;
+}
+.single-msg {
+    display: flex;
+    width: 50%;
+    overflow: hidden;
+    background-color: antiquewhite;
+    border: 1px solid black;
+    margin: 1rem 0;
+}
+
+.msg-image {
+    width: 50px;
+    height: 50px;
+    overflow: hidden;
+    border-radius: 100%;
+    margin: 1rem 2rem;
+}
+
+.msg-image img {
+    width: 100%;
+}
+
+.msges {
+    width: 75%;
+}
+
+.left-msg {
+    position: relative;
+    left: 1%;
+}
+
+.right-msg {
+    position: relative;
+    right: -49%;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ---------------- Profile Page ---------------- */
+
+.profile img{
+    width: 75%;
+    height: auto;
+    margin: 3rem auto;
+}
+
+.profile .image-side button{
+    margin: auto;
+    width: 75%;
+    padding: 1rem;
+}
+
+.profile-data{
+    padding: 2rem 0;
+    color: var(--extra-color);
+}
+.profile .btn{
+    display: inline;
+    margin: 1rem 1rem 0px 0rem;
+}
+
+/* --------X-------- Proflie Page --------X-------- */
+
+
+
+.user-image{
+    width: 50px;
+    height: 50px;
+    overflow: hidden;
+    border-radius: 100%;
+    cursor: pointer;
+}
+.user-image img{
+    width: 100%;
+}
