@@ -5,8 +5,9 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.shortcuts import render
-
-
+from .models import LabReport, LabReportImage
+import json
+from datetime import date
 def home(request):
     return render(request, 'home.html')
 
@@ -138,8 +139,17 @@ class DatasetAPIView(APIView):
             gemini_json_final = gemini_response(prompt2)
             print(f"line 134 {gemini_json_final}")
 
+            user=request.user
+
+            # Create LabReport instance
+            lab_report = LabReport.objects.create(user=user, report_data=gemini_json_final, report_date=date.today())
+
+            # Create LabReportImage instance
+            LabReportImage.objects.create(lab_report=lab_report, image=image_file, size=image_file.size)
+
+
             # Return the result from gemini_response as JSON response
-            return JsonResponse(gemini_json_final, safe=False)
+            return JsonResponse(gemini_json_final,safe=False)
 
         except Exception as e:
             original_exception = e.__cause__
