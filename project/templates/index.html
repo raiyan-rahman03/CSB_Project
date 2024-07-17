@@ -1,0 +1,262 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedVisual</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}">
+</head>
+<body>
+    <header>
+        <!-- Navbar -->
+        <nav>
+            <div class="container flex-row space_between">
+                <div class="flex-row space_between logo-icon-wrapper">
+                    <div class="logo">
+                        <img src="{% static 'images/logo.png' %}" alt="Logo">
+                    </div>
+                    <div class="icon-show-off" id="showContentButton">
+                        <span>+</span>
+                    </div>
+                </div>
+                <div class="nav-item">
+                    <ul class="flex-row space_around">
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Report</a></li>
+                        <li><a href="#">Talk With Doctor</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="user">
+                    <ul class="flex-row space_around">
+                        <li><a href="#">Login</a></li>
+                        <li><a href="#">SignUp</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="header flex-row container">
+            <div class="content-side two-side-div">
+                <h1>
+                    Med <br>
+                    &nbsp;&nbsp;&nbsp;Visual
+                </h1>
+                <p>
+                    Empowering doctors with real-time disease insights and personalized
+                    feedback, while providing users with clear visual data and direct
+                    access to medical expertise.
+                </p>
+                <button class="btn">
+                    <a href="#">Start Now</a>
+                </button>
+            </div>
+            <div class="image-side two-side-div">
+                <img src="{% static 'images/home_header.png' %}" alt="Home Header">
+            </div>
+        </div>
+    </header>
+
+    <section id="book-apoinment" class="container">
+        <div class="book-apoinment-wrapper flex-column">
+            <h1>Book Appointment</h1>
+            <div class="top-appointment-line flex-row space_between">
+                <div class="appoinment-section-wrapper flex-column">
+                    <p>Patient's Name</p>
+                    <input type="text">
+                </div>
+                <div class="appoinment-section-wrapper flex-column">
+                    <p>Doctor's Name</p>
+                    <input type="text">
+                </div>
+                <div class="appoinment-section-wrapper flex-column">
+                    <p>Number</p>
+                    <input type="text">
+                </div>
+            </div>
+            <div class="details-appointment-line flex-column">
+                <p>Problem</p>
+                <input type="text">
+            </div>
+        </div>
+    </section>
+
+    <section id="about-us" class="container flex-row">
+        <div class="image-side two-side-div">
+            <img src="{% static 'images/about-us.png' %}" alt="About Us">
+        </div>
+
+        <div class="content-side two-side-div">
+            <h1>About Us</h1>
+            <p>
+                At MedVisual, we are dedicated to enhancing healthcare through innovative technology. Our platform empowers doctors with detailed feedback and insights on disease patterns, while providing users with intuitive graphical interfaces to track their health metrics. By facilitating seamless communication between patients and medical professionals, we aim to improve diagnostic accuracy and treatment effectiveness, ensuring better health outcomes for everyone.
+            </p>
+            <button class="btn">
+                <a href="#">Read more</a>
+            </button>
+        </div>
+    </section>
+
+    <section id="services" class="container">
+        <h1 class="top-write">Hospital Treatment</h1>
+        <div class="services-wrapper flex-row space_between">
+            <div class="single-service">
+                <div class="single-service-img">
+                    <img src="{% static 'images/services/t1.png' %}" alt="Service 1">
+                </div>
+                <h3>Nephrologist Care</h3>
+                <p>
+                    alteration in some form, by injected humour, or randomised words
+                    which don't look even slightly e sure there isn't anything
+                </p>
+                <a href="#">Read More</a>
+            </div>
+            <div class="single-service">
+                <div class="single-service-img">
+                    <img src="{% static 'images/services/t1.png' %}" alt="Service 2">
+                </div>
+                <h3>Nephrologist Care</h3>
+                <p>
+                    alteration in some form, by injected humour, or randomised words
+                    which don't look even slightly e sure there isn't anything
+                </p>
+                <a href="#">Read More</a>
+            </div>
+            <div class="single-service">
+                <div class="single-service-img">
+                    <img src="{% static 'images/services/t1.png' %}" alt="Service 3">
+                </div>
+                <h3>Nephrologist Care</h3>
+                <p>
+                    alteration in some form, by injected humour, or randomised words
+                    which don't look even slightly e sure there isn't anything
+                </p>
+                <a href="#">Read More</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="doctor" class="container">
+        <h1 class="top-write">OUR DOCTORS</h1>
+        <div class="doctor-wrapper space_around flex-row owl-carousel">
+            <div class="single-doctor">
+                <div class="doctor-image">
+                    <img src="{% static 'images/team3.jpg' %}" alt="Doctor 1">
+                </div>
+                <p>Morco</p>
+                <p>MBBS</p>
+                <ul class="doctor-link flex-row space_around">
+                    <li><i class="fa-brands fa-facebook"></i></li>
+                    <li><i class="fa-brands fa-x-twitter"></i></li>
+                    <li><i class="fa-brands fa-instagram"></i></li>
+                    <li><i class="fa-brands fa-youtube"></i></li>
+                </ul>
+            </div>
+            <div class="single-doctor">
+                <div class="doctor-image">
+                    <img src="{% static 'images/team3.jpg' %}" alt="Doctor 2">
+                </div>
+                <p>Morco</p>
+                <p>MBBS</p>
+                <ul class="doctor-link flex-row space_around">
+                    <li><i class="fa-brands fa-facebook"></i></li>
+                    <li><i class="fa-brands fa-x-twitter"></i></li>
+                    <li><i class="fa-brands fa-instagram"></i></li>
+                    <li><i class="fa-brands fa-youtube"></i></li>
+                </ul>
+            </div>
+            <div class="single-doctor">
+                <div class="doctor-image">
+                    <img src="{% static 'images/team3.jpg' %}" alt="Doctor 3">
+                </div>
+                <p>Morco</p>
+                <p>MBBS</p>
+                <ul class="doctor-link flex-row space_around">
+                    <li><i class="fa-brands fa-facebook"></i></li>
+                    <li><i class="fa-brands fa-x-twitter"></i></li>
+                    <li><i class="fa-brands fa-instagram"></i></li>
+                    <li><i class="fa-brands fa-youtube"></i></li>
+                </ul>
+            </div>
+            <div class="single-doctor">
+                <div class="doctor-image">
+                    <img src="{% static 'images/team3.jpg' %}" alt="Doctor 4">
+                </div>
+                <p>Morco</p>
+                <p>MBBS</p>
+                <ul class="doctor-link flex-row space_around">
+                    <li><i class="fa-brands fa-facebook"></i></li>
+                    <li><i class="fa-brands fa-x-twitter"></i></li>
+                    <li><i class="fa-brands fa-instagram"></i></li>
+                    <li><i class="fa-brands fa-youtube"></i></li>
+                </ul>
+            </div>
+            <div class="single-doctor">
+                <div class="doctor-image">
+                    <img src="{% static 'images/team3.jpg' %}" alt="Doctor 5">
+                </div>
+                <p>Morco</p>
+                <p>MBBS</p>
+                <ul class="doctor-link flex-row space_around">
+                    <li><i class="fa-brands fa-facebook"></i></li>
+                    <li><i class="fa-brands fa-x-twitter"></i></li>
+                    <li><i class="fa-brands fa-instagram"></i></li>
+                    <li><i class="fa-brands fa-youtube"></i></li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact-us" class="container flex-row">
+        <div class="two-side-div">
+            <h2>Contact Us</h2>
+            <input type="text" placeholder="Full Name">
+            <input type="email" placeholder="Email">
+            <input type="number" placeholder="Phone Number">
+            <textarea placeholder="Message"></textarea>
+            <button class="btn">Send</button>
+        </div>
+        <div class="two-side-div">
+            <img src="{% static 'images/contact-us.png' %}" alt="Contact Us">
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer">
+            <h2>MedVisual</h2>
+            <div class="about-us-footer">
+                <ul class="flex-row space_around">
+                    <li class="flex-column">
+                        <p>Shahidullah</p>
+                        <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                    </li>
+                    <li class="flex-column">
+                        <p>Raiyan</p>
+                        <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                    </li>
+                    <li class="flex-column">
+                        <p>Miraj</p>
+                        <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                    </li>
+                    <li class="flex-column">
+                        <p>Raiyan</p>
+                        <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                    </li>
+                </ul>
+            </div>
+            <div class="footer_copy">
+                <span>© Shahidullah || Raiyan || Miraj || Raiyan. All rights reserved</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://kit.fontawesome.com/2f363fc945.js" crossorigin="anonymous"></script>
+    <script src="{% static 'javascript/jquery.min.js' %}"></script>
+    <script src="{% static 'javascript/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'javascript/script.js' %}"></script>
+</body>
+</html>

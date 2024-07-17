@@ -188,3 +188,14 @@ class AppointmentListCreateView(generics.ListCreateAPIView):
 class AppointmentRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Appointment.objects.all()
     serializer_class = AppointmentSerializer
+# views.py
+from django.shortcuts import render
+
+def index(request):
+    return render(request, 'index.html')
+
+def chat_with_doctor(request):
+    return render(request, 'chat_with_doctor.html')
+
+def profile(request):
+    return render(request, 'profile.html')

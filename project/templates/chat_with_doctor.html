@@ -1,11 +1,13 @@
+{% load static %}
+
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MedVisual</title>
-    <link rel="stylesheet" href="css/style.css" />
-    <link rel="stylesheet" href="css/owl.carousel.min.css" />
-    <link rel="stylesheet" href="css/owl.theme.default.min.css" />
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}" />
   </head>
   <body>
     <header>
@@ -20,16 +22,16 @@
           </div>
           <div class="nav-item">
             <ul class="flex-row space_around">
-              <li><a href="">Home</a></li>
-              <li><a href="">Report</a></li>
-              <li><a href="">Talk With Doctor</a></li>
-              <li><a href="">Contact Us</a></li>
+              <li><a href="#">Home</a></li>
+              <li><a href="#">Report</a></li>
+              <li><a href="#">Talk With Doctor</a></li>
+              <li><a href="#">Contact Us</a></li>
             </ul>
           </div>
           <div class="user">
             <ul class="flex-row space_around">
-              <li><a href="">Login</a></li>
-              <li><a href="">SignUp</a></li>
+              <li><a href="#">Login</a></li>
+              <li><a href="#">SignUp</a></li>
             </ul>
           </div>
         </div>
@@ -39,7 +41,7 @@
     <section id="all-chat">
       <div class="single-chat-acc flex-row">
         <div class="single-chat-image">
-          <img src="Image/doctor_img.jpg" alt="" />
+          <img src="{% static 'images/doctor_img.jpg' %}" alt="Doctor Image" />
         </div>
         <div class="single-chat-acc-simple-details flex-column">
           <p>Dr. Black</p>
@@ -48,7 +50,7 @@
       </div>
       <div class="single-chat-acc flex-row">
         <div class="single-chat-image">
-          <img src="Image/doctor_img.jpg" alt="" />
+          <img src="{% static 'images/doctor_img.jpg' %}" alt="Doctor Image" />
         </div>
         <div class="single-chat-acc-simple-details flex-column">
           <p>Dr. Black</p>
@@ -57,7 +59,7 @@
       </div>
       <div class="single-chat-acc flex-row">
         <div class="single-chat-image">
-          <img src="Image/doctor_img.jpg" alt="" />
+          <img src="{% static 'images/doctor_img.jpg' %}" alt="Doctor Image" />
         </div>
         <div class="single-chat-acc-simple-details flex-column">
           <p>Dr. Black</p>
@@ -69,7 +71,7 @@
     <section id="msg-option">
       <div class="messege-header flex-row">
         <div class="message-header-image">
-          <img src="Image/doctor_img.jpg" alt="" />
+          <img src="{% static 'images/doctor_img.jpg' %}" alt="Doctor Image" />
         </div>
         <div class="message-header-details flex-column">
           <p>Dr. Black</p>
@@ -81,7 +83,7 @@
         <div class="single-msg-full">
           <div class="single-msg flex-row left-msg">
             <div class="msg-image">
-              <img src="Image/doctor_img.jpg" alt="" />
+              <img src="{% static 'images/doctor_img.jpg' %}" alt="Doctor Image" />
             </div>
             <div class="msges">
               <p>Dr. Black</p>
@@ -97,7 +99,7 @@
         <div class="single-msg-full">
           <div class="single-msg flex-row left-msg">
             <div class="msg-image">
-              <img src="Image/doctor_img.jpg" alt="" />
+              <img src="{% static 'images/doctor_img.jpg' %}" alt="Doctor Image" />
             </div>
             <div class="msges">
               <p>Dr. Black</p>
@@ -113,7 +115,7 @@
         <div class="single-msg-full">
           <div class="single-msg flex-row right-msg">
             <div class="msg-image">
-              <img src="Image/doctor_img.jpg" alt="" />
+              <img src="{% static 'images/doctor_img.jpg' %}" alt="Doctor Image" />
             </div>
             <div class="msges">
               <p>Dr. Black</p>
@@ -129,7 +131,7 @@
         <div class="single-msg-full">
           <div class="single-msg flex-row left-msg">
             <div class="msg-image">
-              <img src="Image/doctor_img.jpg" alt="" />
+              <img src="{% static 'images/doctor_img.jpg' %}" alt="Doctor Image" />
             </div>
             <div class="msges">
               <p>Dr. Black</p>
@@ -145,7 +147,7 @@
         <div class="single-msg-full">
           <div class="single-msg flex-row left-msg">
             <div class="msg-image">
-              <img src="Image/doctor_img.jpg" alt="" />
+              <img src="{% static 'images/doctor_img.jpg' %}" alt="Doctor Image" />
             </div>
             <div class="msges">
               <p>Dr. Black</p>
@@ -161,7 +163,7 @@
         <div class="single-msg-full">
           <div class="single-msg flex-row right-msg">
             <div class="msg-image">
-              <img src="Image/doctor_img.jpg" alt="" />
+              <img src="{% static 'images/doctor_img.jpg' %}" alt="Doctor Image" />
             </div>
             <div class="msges">
               <p>Dr. Black</p>
@@ -177,7 +179,7 @@
         <div class="single-msg-full">
             <div class="single-msg flex-row left-msg">
               <div class="msg-image">
-                <img src="Image/doctor_img.jpg" alt="" />
+                <img src="{% static 'images/doctor_img.jpg' %}" alt="Doctor Image" />
               </div>
               <div class="msges">
                 <p>Dr. Black</p>
@@ -193,7 +195,7 @@
           <div class="single-msg-full">
             <div class="single-msg flex-row left-msg">
               <div class="msg-image">
-                <img src="Image/doctor_img.jpg" alt="" />
+                <img src="{% static 'images/doctor_img.jpg' %}" alt="Doctor Image" />
               </div>
               <div class="msges">
                 <p>Dr. Black</p>
@@ -209,7 +211,7 @@
         <div class="single-msg-full">
             <div class="single-msg flex-row left-msg">
               <div class="msg-image">
-                <img src="Image/doctor_img.jpg" alt="" />
+                <img src="{% static 'images/doctor_img.jpg' %}" alt="Doctor Image" />
               </div>
               <div class="msges">
                 <p>Dr. Black</p>
@@ -225,7 +227,7 @@
         <div class="single-msg-full">
             <div class="single-msg flex-row right-msg">
               <div class="msg-image">
-                <img src="Image/doctor_img.jpg" alt="" />
+                <img src="{% static 'images/doctor_img.jpg' %}" alt="Doctor Image" />
               </div>
               <div class="msges">
                 <p>Dr. Black</p>
@@ -241,7 +243,7 @@
         <div class="single-msg-full">
             <div class="single-msg flex-row left-msg">
               <div class="msg-image">
-                <img src="Image/doctor_img.jpg" alt="" />
+                <img src="{% static 'images/doctor_img.jpg' %}" alt="Doctor Image" />
               </div>
               <div class="msges">
                 <p>Dr. Black</p>
@@ -264,8 +266,8 @@
       </div>
     </section>
 
-    <script src="javascript/jquery.min.js"></script>
-    <script src="javascript/owl.carousel.min.js"></script>
-    <script src="javascript/script.js"></script>
+    <script src="{% static 'javascript/jquery.min.js' %}"></script>
+    <script src="{% static 'javascript/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'javascript/script.js' %}"></script>
   </body>
 </html>
