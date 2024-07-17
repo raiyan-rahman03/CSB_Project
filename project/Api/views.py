@@ -1,3 +1,6 @@
+from .serializers import ProfileSerializer, AppointmentSerializer
+from .models import Profile, Appointment
+from rest_framework import generics
 import requests
 from django.http import JsonResponse
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -8,6 +11,8 @@ from django.shortcuts import render
 from .models import LabReport, LabReportImage
 import json
 from datetime import date
+
+
 def home(request):
     return render(request, 'home.html')
 
@@ -76,9 +81,11 @@ def gemini_response(prompt):
     }
 
     response = requests.post(url, headers=headers, json=data)
-    print(f"gemini_response status: {response.status_code}, response: {response.text}")
+    print(
+        f"gemini_response status: {response.status_code}, response: {response.text}")
 
-    response_text = response.json()['candidates'][0]['content']['parts'][0]['text']
+    response_text = response.json(
+    )['candidates'][0]['content']['parts'][0]['text']
     return response_text
 
 
@@ -139,17 +146,18 @@ class DatasetAPIView(APIView):
             gemini_json_final = gemini_response(prompt2)
             print(f"line 134 {gemini_json_final}")
 
-            user=request.user
+            user = request.user
 
             # Create LabReport instance
-            lab_report = LabReport.objects.create(user=user, report_data=gemini_json_final, report_date=date.today())
+            lab_report = LabReport.objects.create(
+                user=user, report_data=gemini_json_final, report_date=date.today())
 
             # Create LabReportImage instance
-            LabReportImage.objects.create(lab_report=lab_report, image=image_file, size=image_file.size)
-
+            LabReportImage.objects.create(
+                lab_report=lab_report, image=image_file, size=image_file.size)
 
             # Return the result from gemini_response as JSON response
-            return JsonResponse(gemini_json_final,safe=False)
+            return JsonResponse(gemini_json_final, safe=False)
 
         except Exception as e:
             original_exception = e.__cause__
@@ -159,3 +167,24 @@ class DatasetAPIView(APIView):
                 error_message = str(e)
 
             return Response({"error": error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+# crud sytem building blocks
+
+class ProfileListCreateView(generics.ListCreateAPIView):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+
+
+class ProfileRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+
+
+class AppointmentListCreateView(generics.ListCreateAPIView):
+    queryset = Appointment.objects.all()
+    serializer_class = AppointmentSerializer
+
+
+class AppointmentRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Appointment.objects.all()
+    serializer_class = AppointmentSerializer

@@ -1,1 +1,18 @@
-<h1>auth</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Image File</title>
+</head>
+<body>
+    <h1>Upload an Image File</h1>
+    <form action="http://127.0.0.1:8000/dataset" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="file">Choose an image file:</label>
+        <input type="file" id="file" name="file" accept="image/*" required>
+        <br><br>
+        <input type="submit" value="Upload">
+    </form>
+</body>
+</html>

@@ -9,4 +9,9 @@ urlpatterns = [
     path('home',home),
     path('ocr',AspireResponseView.as_view()),
     path('dataset',DatasetAPIView.as_view()),
+    path('profiles/', ProfileListCreateView.as_view(), name='profile-list-create'),
+    path('profiles/<int:pk>/', ProfileRetrieveUpdateDestroyView.as_view(), name='profile-detail'),
+    path('appointments/', AppointmentListCreateView.as_view(), name='appointment-list-create'),
+    path('appointments/<int:pk>/', AppointmentRetrieveUpdateDestroyView.as_view(), name='appointment-detail'),
 ]
+
