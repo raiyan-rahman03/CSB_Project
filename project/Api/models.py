@@ -25,7 +25,7 @@ class LabReport(models.Model):
 
 class LabReportImage(models.Model):
     lab_report = models.ForeignKey(LabReport, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField()
+    image = models.ImageField(upload_to='lab_reports') 
     uploaded_at = models.DateTimeField(auto_now_add=True)
     size = models.PositiveIntegerField()
 
