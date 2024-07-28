@@ -1,8 +1,8 @@
 /* ---------------- Global Classes ---------------- */
 :root {
-    --main-bg: #89a0b7; 
+    --main-bg: #f0f4f8; 
     --second-bg: #ffffff; 
-    --main-color: #afc0d3; 
+    --main-color: #007bff; 
     --secondary-color: #28a745; 
     --extra-color: #6c757d; 
 }
@@ -60,7 +60,7 @@ a:hover {
 }
 
 .btn{
-    padding: 0.75rem 2rem;
+    padding: 1rem 1.75rem;
     border: none;
     background-color: var(--extra-color);
     color: var(--second-bg);
@@ -71,12 +71,33 @@ a:hover {
     color: var(--second-bg);
 }
 
+.btn:hover {
+    background: var(--secondary-color);
+    cursor: pointer;
+}
 
 /* --------X-------- Global Classes --------X-------- */
 
 
 
+/* ---------------- Scrollbar ---------------- */
 
+::-webkit-scrollbar {
+    width: 0.75rem;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--main-bg);
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: var(--extra-color);
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary-color);
+  }
+  
+  /* --------X-------- Scrollbar --------X-------- */
 
 
 /* ---------------- NavBar ---------------- */
@@ -109,7 +130,16 @@ nav ul li{
 .icon-show-off span{
     font-size: 3rem;
 }
-
+.user-image{
+    width: 50px;
+    height: 50px;
+    overflow: hidden;
+    border-radius: 100%;
+    cursor: pointer;
+}
+.user-image img{
+    width: 100%;
+}
 
 
 @media only screen and (max-width: 768px) {
@@ -322,6 +352,36 @@ footer{
 
 
 
+/* ---------------- Profile Page ---------------- */
+
+.profile{
+    align-items: center;
+}
+.profile img{
+    width: 75%;
+    height: auto;
+    margin: 3rem auto;
+    border-radius: 100%;
+}
+
+.profile-data{
+    padding: 2rem 0;
+    color: var(--extra-color);
+}
+.ul-li-in-profile p, .profile-whatisname{
+    color: var(--secondary-color);
+    font-weight: bold;
+}
+.ul-li-in-profile ul li{
+    list-style: circle;
+}
+
+.profile .btn{
+    display: inline;
+    margin: 1rem 1rem 0px 0rem;
+}
+
+/* --------X-------- Proflie Page --------X-------- */
 
 
 
@@ -334,6 +394,9 @@ footer{
 
 
 
+
+
+/* ---------------- Chat With Doctor Page ---------------- */
 
 
 #all-chat{
@@ -342,13 +405,15 @@ footer{
     width: 25%;
     height: 85%;
     overflow: hidden;
-    border: 1px solid black;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 .single-chat-acc{
-    width: 100%;
-    border: 1px solid black;
-    margin: 1rem 0rem;
+    width: 90%;
+    border: 1px solid var(--main-color);
+    margin: 1rem auto;
+    border-radius: 6rem;
 }
 
 .single-chat-image{
@@ -370,9 +435,9 @@ footer{
     top: 15%;
 }
 .messege-header{
-    height: 6rem;
+    height: 5rem;
     overflow: hidden;
-    border: 1px solid black;
+    border: 1px solid var(--extra-color);
     position: fixed;
     width: 100%;
 }
@@ -400,7 +465,7 @@ footer{
     margin: 1rem;
 }
 .sent-msg button{
-    padding: 1rem 2rem;
+    display: inline;
 }
 .sent-msg div{
     width: 85%;
@@ -411,23 +476,26 @@ footer{
 
 .all-msg {
     position: absolute;
-    top: 6rem;
+    top: 5rem;
     width: 100%;
     height: 60vh;
     overflow-x: hidden;
     overflow-y: auto;
-    background: #6d6d6d;
+    background: var(--second-bg);
 }
 .single-msg-full{
     width: 100%;
 }
 .single-msg {
     display: flex;
-    width: 50%;
+    width: 45%;
     overflow: hidden;
-    background-color: antiquewhite;
-    border: 1px solid black;
+    background-color: var(--main-bg);
+    border: 1px solid var(--main-color);
     margin: 1rem 0;
+    color: var(--extra-color);
+    align-items: center;
+    border-radius: 6rem;
 }
 
 .msg-image {
@@ -443,7 +511,7 @@ footer{
 }
 
 .msges {
-    width: 75%;
+    width: 70%;
 }
 
 .left-msg {
@@ -460,48 +528,28 @@ footer{
 
 
 
+/* --------X-------- Chat With Doctor Page --------X-------- */
 
 
 
 
 
-
-
-
-/* ---------------- Profile Page ---------------- */
-
-.profile img{
-    width: 75%;
-    height: auto;
-    margin: 3rem auto;
-}
-
-.profile .image-side button{
-    margin: auto;
-    width: 75%;
-    padding: 1rem;
-}
-
-.profile-data{
-    padding: 2rem 0;
-    color: var(--extra-color);
-}
-.profile .btn{
-    display: inline;
-    margin: 1rem 1rem 0px 0rem;
-}
-
-/* --------X-------- Proflie Page --------X-------- */
-
-
-
-.user-image{
-    width: 50px;
-    height: 50px;
+.login-sighun-wrapper{
+    height: 100vh;
     overflow: hidden;
-    border-radius: 100%;
-    cursor: pointer;
+    text-align: center;
 }
-.user-image img{
-    width: 100%;
+.login-sighun-wrapper .content-side{
+    margin: 0;
+}
+
+.login-sighun-wrapper input{
+    width: 75%;
+    margin: 1rem 1rem;
+}
+.login-sighun-wrapper .btn{
+    display: inline;
+}
+.google-login-signup i{
+    font-size: 2rem;
 }
