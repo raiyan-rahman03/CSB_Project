@@ -13,12 +13,23 @@ class Profile(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.role}"
+    
+class TemporaryLabReport(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='temporary_lab_reports')
+    ocr_text = models.TextField(null=True, blank=True)
+    gemini_prompt1_response = models.TextField(null=True, blank=True)
+    original_report_date = models.DateField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)    
+    ocr_confidence=models.TextField(null=True, blank=True)
+    address_of_hospital=models.TextField(null=True, blank=True)
 
 class LabReport(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='lab_reports')
     report_data = models.JSONField()
     report_date = models.DateField()
     uploaded_at = models.DateTimeField(auto_now_add=True)
+    ocr_conf=models.TextField(null=True, blank=True)
+    hospital_address=models.TextField(null=True, blank=True)
 
     def __str__(self):
         return f"Lab Report {self.id} by {self.user.username} on {self.report_date}"
