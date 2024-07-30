@@ -22,6 +22,7 @@ class TemporaryLabReport(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)    
     ocr_confidence=models.TextField(null=True, blank=True)
     address_of_hospital=models.TextField(null=True, blank=True)
+    image = models.ImageField(upload_to='temp_lab_img',null=True)
 
 class LabReport(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='lab_reports')

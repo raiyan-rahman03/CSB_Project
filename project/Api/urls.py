@@ -12,6 +12,9 @@ urlpatterns = [
     path('profile/',profile, name='profile'),
     path('ocr',AspireResponseView.as_view()),
     path('dataset',DatasetAPIView.as_view()),
+    path('gemini_prompt1',GeminiStep1APIView.as_view()),
+    path('gemini_prompt2',GeminiStep2APIView.as_view()),
+
     path('profiles/', ProfileListCreateView.as_view(), name='profile-list-create'),
     path('profiles/<int:pk>/', ProfileRetrieveUpdateDestroyView.as_view(), name='profile-detail'),
     path('appointments/', AppointmentListCreateView.as_view(), name='appointment-list-create'),

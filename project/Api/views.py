@@ -28,7 +28,13 @@ class AspireResponseView(APIView):
 
     def post(self, request, *args, **kwargs):
         try:
+            user_id = request.data.get('user_id')
+            user = User.objects.get(id=user_id)
+
             image_file = request.FILES['file']
+            
+            
+
             receipt_ocr_endpoint = 'https://ocr.asprise.com/api/v1/receipt'
             r = requests.post(receipt_ocr_endpoint, data={
                 'api_key': 'TEST',  # Use 'TEST' for testing purpose
@@ -37,6 +43,7 @@ class AspireResponseView(APIView):
             }, files={"file": image_file})
 
             data = r.json()
+            print(f" line 40  {data}")
             extracted_data = []
             for receipt in data.get('receipts', []):
                 date = receipt.get('date')
@@ -55,8 +62,6 @@ class AspireResponseView(APIView):
                     'success': str(success),
                 })
 
-            user = request.user
-
             # Save to TemporaryLabReport
             temp_report = TemporaryLabReport.objects.create(
                 user=user,
@@ -64,12 +69,15 @@ class AspireResponseView(APIView):
                 original_report_date=extracted_data[0]['date'],
                 ocr_confidence=extracted_data[0]['ocr_confidence'],
                 address_of_hospital=extracted_data[0]['merchant_address'],
-
+                image=image_file
             )
+            print(f"line 69 extracted data :    {extracted_data}")
+            print(f"Temporary  id  :    {temp_report.id}")
 
             return JsonResponse({'temporary_report_id': temp_report.id}, safe=False)
         except Exception as e:
             return Response({"error": str(e)}, status=500)
+
 
 # Helper function for Gemini API call
 
@@ -104,8 +112,9 @@ class GeminiStep1APIView(APIView):
 
     def post(self, request, *args, **kwargs):
         try:
+            user_id = request.data.get('user_id')
             temp_report_id = request.data.get('temporary_report_id')
-            temp_report = TemporaryLabReport.objects.get(id=temp_report_id)
+            temp_report = TemporaryLabReport.objects.get(id=temp_report_id, user_id=user_id)
 
             prompt1 = '''I have some text from a lab report obtained through OCR. It's a bit messy, and I'd like to clean it up and organize the data nicely in text.
             Present the information in plain text, don't use tables.
@@ -115,6 +124,7 @@ class GeminiStep1APIView(APIView):
             ''' + temp_report.ocr_text
 
             gemini_result = gemini_response(prompt1)
+            print(f"Line 118     {gemini_result}")
 
             # Save cleaned text to TemporaryLabReport
             temp_report.gemini_prompt1_response = gemini_result
@@ -124,14 +134,14 @@ class GeminiStep1APIView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=500)
 
-
 # Step 3: GeminiStep2APIView
 class GeminiStep2APIView(APIView):
 
     def post(self, request, *args, **kwargs):
         try:
+            user_id = request.data.get('user_id')
             temp_report_id = request.data.get('temporary_report_id')
-            temp_report = TemporaryLabReport.objects.get(id=temp_report_id)
+            temp_report = TemporaryLabReport.objects.get(id=temp_report_id, user_id=user_id)
 
             prompt2 = (
                 "I have an OCR-extracted text from a medical lab report. "
@@ -168,8 +178,6 @@ class GeminiStep2APIView(APIView):
                 uploaded_at=timezone.now(),
                 ocr_conf=temp_report.ocr_confidence,
                 hospital_address=temp_report.address_of_hospital
-
-
             )
 
             # Create LabReportImage instance
@@ -189,24 +197,29 @@ class DatasetAPIView(APIView):
 
     def post(self, request, *args, **kwargs):
         try:
-            # Step 1: Make a POST request to AspireResponseView
-            aspire_url = 'http://localhost:8000/aspire'  # Adjust URL as needed
+            user = request.user
+
+            if not user.is_authenticated:
+                return Response({"error": "User not authenticated"}, status=401)
+
+            user_id = user.id
             image_file = request.FILES['file']
-            response = requests.post(aspire_url, files={'file': image_file})
+
+            # Step 1: Make a POST request to AspireResponseView
+            aspire_url = 'http://localhost:8000/ocr'  # Adjust URL as needed
+            response = requests.post(aspire_url, files={'file': image_file}, data={'user_id': user_id})
             response_data = response.json()
             temporary_report_id = response_data['temporary_report_id']
 
-            # Step 2: Make a POST request to GeminiPrompt1View
+            # Step 2: Make a POST request to GeminiStep1APIView
             gemini_prompt1_url = 'http://localhost:8000/gemini_prompt1'  # Adjust URL as needed
-            response = requests.post(gemini_prompt1_url, data={
-                                     'temporary_report_id': temporary_report_id})
+            response = requests.post(gemini_prompt1_url, data={'temporary_report_id': temporary_report_id, 'user_id': user_id})
             response_data = response.json()
             temporary_report_id = response_data['temporary_report_id']
 
-            # Step 3: Make a POST request to GeminiPrompt2View
+            # Step 3: Make a POST request to GeminiStep2APIView
             gemini_prompt2_url = 'http://localhost:8000/gemini_prompt2'  # Adjust URL as needed
-            response = requests.post(gemini_prompt2_url, data={
-                                     'temporary_report_id': temporary_report_id})
+            response = requests.post(gemini_prompt2_url, data={'temporary_report_id': temporary_report_id, 'user_id': user_id})
             gemini_json_final = response.json()
 
             # Return the final JSON response
@@ -214,11 +227,8 @@ class DatasetAPIView(APIView):
 
         except Exception as e:
             original_exception = e.__cause__
-            error_message = f"Original error: {str(original_exception)}" if original_exception else str(
-                e)
+            error_message = f"Original error: {str(original_exception)}" if original_exception else str(e)
             return Response({"error": error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
 
 def data_representation(request):
     user_id = request.user.id  # Geting user id to fetch the data
