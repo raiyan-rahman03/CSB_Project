@@ -4,8 +4,8 @@ import pandas as pd
 
 json_data = [
     {"description": "Haemoglobin", "result": "4000-10000", "ref_range": "/cumm", "unit": ""},
-    {"description": "Neutrophils", "result": 50, "ref_range": "40-80", "unit": ""},
-    {"description": "Lymphocytes", "result": 40, "ref_range": "20-40", "unit": "%"},
+    {"description": "Neutrophils", "result": 80, "ref_range": "40-80", "unit": ""},
+    {"description": "Lymphocytes", "result": 45, "ref_range": "20-40", "unit": "%"},
     {"description": "Eosinophils", "result": 1, "ref_range": "1-6", "unit": "%"},
     {"description": "Monocytes", "result": 9.15, "ref_range": "13-17", "unit": "g/dL"},
     {"description": "Total Leucocyte Count", "result": 5000, "ref_range": "2-10", "unit": "%"},
@@ -21,7 +21,7 @@ json_data = [
     {"description": "Hct", "result": 40, "ref_range": "40-50", "unit": "%"},
     {"description": "RDW-CV", "result": 12, "ref_range": "11.6-14.0", "unit": "%"},
     {"description": "RDW-SD", "result": 40, "ref_range": "39-46", "unit": "fL"},
-    {"description": "Platelet Count", "result": 300000, "ref_range": "150", "unit": ""}
+    {"description": "Platelet Count", "result": 99, "ref_range": "150", "unit": ""}
 ]
 
 
@@ -57,6 +57,6 @@ for item in json_data:
 df = pd.DataFrame([extracted_data])
 
 
-df.to_excel(r"C:\Users\GIGABYTE\Desktop\New folder\JSON Dataset.xlsx", index=False)
+df.to_excel(r'C:\Users\Admin\Desktop\CSB\CSB_Project\JSON Dataset.xlsx', index=False)
 
 print("Data extracted and saved to JSON Dataset.xlsx")
