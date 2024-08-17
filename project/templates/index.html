@@ -25,18 +25,24 @@
                 </div>
                 <div class="nav-item">
                     <ul class="flex-row space_around">
-                        <li><a href="#">Home</a></li>
-                        <li><a href="#">Report</a></li>
+                        <li><a href="http://127.0.0.1:8000/index">Home</a></li>
+                        <li><a href="http://127.0.0.1:8000/chart">Report</a></li>
                         <li><a href="#">Talk With Doctor</a></li>
                         <li><a href="#">Contact Us</a></li>
+
                     </ul>
                 </div>
                 <div class="user">
                     <ul class="flex-row space_around">
-                        <li><a href="#">Login</a></li>
-                        <li><a href="#">SignUp</a></li>
+                        {% if user.is_authenticated %}
+                            <li><a href="http://127.0.0.1:8000/accounts/logout/">Logout</a></li>
+                        {% else %}
+                            <li><a href="http://127.0.0.1:8000/accounts/login/">Login</a></li>
+                            <li><a href="http://127.0.0.1:8000/accounts/signup/">SignUp</a></li>
+                        {% endif %}
                     </ul>
                 </div>
+                
             </div>
         </nav>
 

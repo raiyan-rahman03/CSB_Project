@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Results Chart</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            background-color: #b3c8ff;
+        }
+        .container {
+            background: #f8faff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 100%;
+            max-width: 1000px;
+            box-sizing: border-box;
+            margin: 20px;
+        }
+        .header-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        h1 {
+            margin: 0;
+            font-size: 24px;
+            color: #333;
+        }
+        p {
+            margin: 5px 0;
+            font-size: 16px;
+            color: #555;
+        }
+        select, canvas, input, .view-toggle, table {
+            width: 100%;
+            max-width: 100%;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+        select, input, .view-toggle {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        canvas {
+            max-width: 100%;
+            height: 40vh;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            word-wrap: break-word;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .view-toggle {
+            display: flex;
+            justify-content: space-around;
+        }
+        .view-toggle button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 4px;
+            flex: 1;
+            margin: 0 5px;
+        }
+        .view-toggle button.active {
+            background-color: #0056b3;
+        }
+        @media (max-width: 768px) {
+            .view-toggle {
+                flex-direction: column;
+            }
+            .view-toggle button {
+                margin: 5px 0;
+                width: 100%;
+            }
+        }
+    </style>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+</head>
+<body>
+    
+    <div class="container">
+        <div class="header-container">
+            <h1>Test Results Overview of {{request.user.username}}</h1>
+            <p>Age: <span id="user-age">--</span></p>
+            <p>Gender: <span id="user-gender">--</span></p>
+        </div>
+        <select id="test-dropdown">
+            <option value="">Select a test</option>
+        </select>
+        <div class="view-toggle">
+            <button id="graph-view" class="active">Graph View</button>
+            <button id="table-view">Table View</button>
+        </div>
+        <input type="text" id="start-date" placeholder="From this date" 
+        onfocus="(this.type='date')" 
+        onblur="(this.type='text'); if(!this.value) this.placeholder='From this date';" />
+ <input type="text" id="end-date" placeholder="Upto this date" 
+        onfocus="(this.type='date')" 
+        onblur="(this.type='text'); if(!this.value) this.placeholder='Upto this date';" />
+ 
+        <canvas id="myChart"></canvas>
+        <table id="result-table" style="display:none;">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Result</th>
+                    <th>Name</th>
+                    <th>Reference Value</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const apiUrl = 'http://127.0.0.1:8000/ch'; // Replace with your API endpoint
+            const dropdown = document.getElementById('test-dropdown');
+            const startDateInput = document.getElementById('start-date');
+            const endDateInput = document.getElementById('end-date');
+            const ctx = document.getElementById('myChart').getContext('2d');
+            const resultTable = document.getElementById('result-table');
+            const tableBody = resultTable.querySelector('tbody');
+            const graphViewButton = document.getElementById('graph-view');
+            const tableViewButton = document.getElementById('table-view');
+            let chart;
+            let tests = [];
+
+            function toggleView(viewType) {
+                if (viewType === 'graph') {
+                    resultTable.style.display = 'none';
+                    document.getElementById('myChart').style.display = 'block';
+                    graphViewButton.classList.add('active');
+                    tableViewButton.classList.remove('active');
+                } else if (viewType === 'table') {
+                    document.getElementById('myChart').style.display = 'none';
+                    resultTable.style.display = 'table';
+                    tableViewButton.classList.add('active');
+                    graphViewButton.classList.remove('active');
+                }
+            }
+
+            graphViewButton.addEventListener('click', function () {
+                toggleView('graph');
+            });
+
+            tableViewButton.addEventListener('click', function () {
+                toggleView('table');
+            });
+
+            // Fetch JSON data
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    tests = data.map(test => ({
+                        description: test.description,
+                        result: test.result,
+                        ref_range: test.ref_range,
+                        unit: test.unit
+                    }));
+
+                    // Populate dropdown
+                    tests.forEach((test, index) => {
+                        const option = document.createElement('option');
+                        option.value = index;
+                        option.textContent = test.description;
+                        dropdown.appendChild(option);
+                    });
+
+                    function renderTable(index, startDate, endDate) {
+                        const test = tests[index];
+                        if (!test) return;
+
+                        const sortedResults = test.result
+                            .map(entry => ({
+                                date: new Date(Object.keys(entry)[0]),
+                                value: Object.values(entry)[0]
+                            }))
+                            .filter(entry => (!startDate || entry.date >= startDate) && (!endDate || entry.date <= endDate))
+                            .sort((a, b) => a.date - b.date);
+
+                        tableBody.innerHTML = ''; // Clear previous table rows
+                        sortedResults.forEach(entry => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${entry.date.toLocaleDateString()}</td>
+                                <td>${entry.value}</td>
+                                <td>${test.description}</td>
+                                <td>${test.ref_range} ${test.unit}</td>
+                            `;
+                            tableBody.appendChild(row);
+                        });
+                    }
+
+                    function updateChart(index, startDate, endDate) {
+                        const test = tests[index];
+                        if (!test) return;
+
+                        if (chart) {
+                            chart.destroy();
+                        }
+
+                        const sortedResults = test.result
+                            .map(entry => ({
+                                date: new Date(Object.keys(entry)[0]),
+                                value: parseFloat(Object.values(entry)[0])
+                            }))
+                            .filter(entry => (!startDate || entry.date >= startDate) && (!endDate || entry.date <= endDate))
+                            .sort((a, b) => a.date - b.date);
+
+                        const labels = sortedResults.map(entry => entry.date);
+                        const dataValues = sortedResults.map(entry => entry.value);
+
+                        const refMin = parseFloat(test.ref_range.split('-')[0]);
+                        const refMax = parseFloat(test.ref_range.split('-')[1]);
+                        const chartMaxValue = Math.max(...dataValues, refMax) + 10;
+
+                        chart = new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: labels,
+                                datasets: [
+                                    {
+                                        label: 'Results',
+                                        data: dataValues,
+                                        borderColor: 'rgba(75, 192, 192, 1)',
+                                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                        fill: false,
+                                        pointBackgroundColor: dataValues.map(value =>
+                                            value < refMin
+                                                ? 'rgba(0, 0, 255, 1)'
+                                                : value > refMax
+                                                    ? 'rgba(255, 0, 0, 1)'
+                                                    : 'rgba(0, 255, 0, 1)'
+                                        ),
+                                        pointBorderColor: dataValues.map(value =>
+                                            value < refMin
+                                                ? 'rgba(0, 0, 255, 1)'
+                                                : value > refMax
+                                                    ? 'rgba(255, 0, 0, 1)'
+                                                    : 'rgba(0, 255, 0, 1)'
+                                        ),
+                                        pointRadius: 5
+                                    },
+                                    {
+                                        label: 'Reference Range',
+                                        data: labels.map(() => refMax),
+                                        borderColor: 'rgba(0, 255, 0, 0)',
+                                        backgroundColor: 'rgba(0, 255, 0, 0.3)',
+                                        fill: {
+                                            target: {
+                                                value: refMin
+                                            },
+                                            above: 'rgba(0, 255, 0, 0.3)',
+                                            below: 'rgba(255, 255, 255, 0)'
+                                        },
+                                        type: 'line',
+                                        pointRadius: 0
+                                    },
+                                    {
+                                        label: 'Below Reference Range',
+                                        data: labels.map(() => refMin),
+                                        borderColor: 'rgba(0, 0, 255, 0)',
+                                        backgroundColor: 'rgba(0, 0, 255, 0.3)',
+                                        fill: {
+                                            target: 'origin',
+                                            above: 'rgba(0, 0, 255, 0.3)',
+                                            below: 'rgba(255, 255, 255, 0)'
+                                        },
+                                        type: 'line',
+                                        pointRadius: 0
+                                    },
+                                    {
+                                        label: 'Above Reference Range',
+                                        data: labels.map(() => chartMaxValue),
+                                        borderColor: 'rgba(255, 0, 0, 0)',
+                                        backgroundColor: 'rgba(255, 0, 0, 0.3)',
+                                        fill: {
+                                            target: {
+                                                value: refMax
+                                            },
+                                            above: 'rgba(255, 0, 0, 0.3)',
+                                            below: 'rgba(255, 255, 255, 0)'
+                                        },
+                                        type: 'line',
+                                        pointRadius: 0
+                                    }
+                                ]
+                            },
+                            options: {
+                                scales: {
+                                    x: {
+                                        type: 'time',
+                                        time: {
+                                            unit: 'day',
+                                            displayFormats: {
+                                                day: 'dd/MM/yyyy'
+                                            }
+                                        },
+                                        title: {
+                                            display: true,
+                                            text: 'Date'
+                                        }
+                                    },
+                                    y: {
+                                        beginAtZero: true,
+                                        suggestedMax: chartMaxValue,
+                                        title: {
+                                            display: true,
+                                            text: `Results (${test.unit})`
+                                        }
+                                    }
+                                },
+                                plugins: {
+                                    tooltip: {
+                                        callbacks: {
+                                            label: function (context) {
+                                                const value = context.raw;
+                                                const label = context.dataset.label || '';
+                                                if (label === 'Results') {
+                                                    if (value < refMin) {
+                                                        return `${label}: ${value} (Below Reference Range)`;
+                                                    } else if (value > refMax) {
+                                                        return `${label}: ${value} (Above Reference Range)`;
+                                                    }
+                                                }
+                                                return `${label}: ${value}`;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
+
+                    function updateContent() {
+                        const selectedIndex = dropdown.value;
+                        const startDate = startDateInput.value ? new Date(startDateInput.value) : null;
+                        const endDate = endDateInput.value ? new Date(endDateInput.value) : null;
+
+                        if (selectedIndex !== "") {
+                            updateChart(selectedIndex, startDate, endDate);
+                            renderTable(selectedIndex, startDate, endDate);
+                        }
+                    }
+
+                    dropdown.addEventListener('change', updateContent);
+                    startDateInput.addEventListener('change', updateContent);
+                    endDateInput.addEventListener('change', updateContent);
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                });
+        });
+    </script>
+</body>
+</html>

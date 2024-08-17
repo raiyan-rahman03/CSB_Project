@@ -320,3 +320,5 @@ def chat_with_doctor(request):
 def profile(request):
     return render(request, 'profile.html')
 
+def chart(request):
+    return render(request, 'chart.html')

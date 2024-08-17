@@ -7,6 +7,7 @@ urlpatterns = [
     path('accounts/profile/', RedirectView.as_view(url='http://127.0.0.1:8000/home', permanent=True)),
     path('', RedirectView.as_view(url='http://127.0.0.1:8000/home', permanent=True)),
     path('home',home),
+    path('chart',chart),
     path('index', index, name='index'),
     path('chat_with_doctor/', chat_with_doctor, name='chat_with_doctor'),
     path('profile/',profile, name='profile'),
