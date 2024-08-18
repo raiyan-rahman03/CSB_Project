@@ -151,6 +151,8 @@ class GeminiStep2APIView(APIView):
                 f"Here's the OCR-extracted text: \n\n{temp_report.gemini_prompt1_response}\n\n"
                 "Transform the text into the following JSON structure:\n\n"
                 "[\n"
+                '    {"test_name": "Complete Blood Count (CBC)"\n'
+                '    {"sample": "Blood"\n'
                 '    {"description": "Haemoglobin", "result": "15", "ref_range": "13-17", "unit": "g/dL"},\n'
                 '    {"description": "Total Leucocyte Count", "result": "5000", "ref_range": "4000-10000", "unit": "/cumm"},\n'
                 '    {"description": "Neutrophils", "result": "50", "ref_range": "40-80", "unit": "%"},\n'
@@ -167,12 +169,39 @@ class GeminiStep2APIView(APIView):
             )
 
             gemini_json_final = gemini_response(prompt2)
+            data_for_clean = gemini_response(prompt2)
+            data_ = data_for_clean.strip()
+            cleaned_data = data_.replace('```json', '').replace('```', '').strip()
+
+            if cleaned_data:
+                # Decode the JSON data
+                report_data_list = json.loads(cleaned_data)
+
+                # Initialize variables for test_name and sample
+                test_name = None
+                sample = None
+
+                # Use a loop to find test_name and sample
+                for item in report_data_list:
+                    if 'test_name' in item and 'sample' in item:
+                        test_name = item['test_name']
+                        sample = item['sample']
+            else:
+                print("there is somthing in the clean phase")
+
+
+            test_name_mod=test_name
+            test_sample_mod=sample     
+                                    
+            
 
             user = temp_report.user
 
             # Create LabReport instance
             lab_report = LabReport.objects.create(
                 user=user,
+                test_name=test_name_mod,
+                sample=test_sample_mod,
                 report_data=gemini_json_final,
                 report_date=temp_report.original_report_date,
                 uploaded_at=timezone.now(),

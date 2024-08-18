@@ -26,6 +26,8 @@ class TemporaryLabReport(models.Model):
 
 class LabReport(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='lab_reports')
+    test_name=models.CharField(max_length=200, null=True,blank=True)
+    sample=models.CharField( max_length=200,null=True,blank=True)
     report_data = models.JSONField()
     report_date = models.DateField()
     uploaded_at = models.DateTimeField(auto_now_add=True)
