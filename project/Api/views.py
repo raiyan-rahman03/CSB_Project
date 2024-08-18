@@ -151,8 +151,8 @@ class GeminiStep2APIView(APIView):
                 f"Here's the OCR-extracted text: \n\n{temp_report.gemini_prompt1_response}\n\n"
                 "Transform the text into the following JSON structure:\n\n"
                 "[\n"
-                '    {"test_name": "Complete Blood Count (CBC)"\n'
-                '    {"sample": "Blood"\n'
+                '    {"test_name": "Complete Blood Count (CBC)"}\n'
+                '    {"sample": "Blood"}\n'
                 '    {"description": "Haemoglobin", "result": "15", "ref_range": "13-17", "unit": "g/dL"},\n'
                 '    {"description": "Total Leucocyte Count", "result": "5000", "ref_range": "4000-10000", "unit": "/cumm"},\n'
                 '    {"description": "Neutrophils", "result": "50", "ref_range": "40-80", "unit": "%"},\n'
@@ -174,24 +174,23 @@ class GeminiStep2APIView(APIView):
             cleaned_data = data_.replace('```json', '').replace('```', '').strip()
 
             if cleaned_data:
-                # Decode the JSON data
-                report_data_list = json.loads(cleaned_data)
+                
+                    # Decode the JSON data
+                    report_data_list = json.loads(cleaned_data)
 
-                # Initialize variables for test_name and sample
-                test_name = None
-                sample = None
+                    # Initialize variables for test_name and sample
+                    test_name = None
+                    sample = None
 
-                # Use a loop to find test_name and sample
-                for item in report_data_list:
-                    if 'test_name' in item and 'sample' in item:
-                        test_name = item['test_name']
-                        sample = item['sample']
-            else:
-                print("there is somthing in the clean phase")
+                    # Separate test_name and sample from the main data
+                    for item in report_data_list:
+                        if 'test_name' in item:
+                            test_name = item['test_name']
+                        elif 'sample' in item:
+                            sample = item['sample']
 
-
-            test_name_mod=test_name
-            test_sample_mod=sample     
+                        test_name_mod=test_name
+                        test_sample_mod=sample     
                                     
             
 
@@ -259,24 +258,27 @@ class DatasetAPIView(APIView):
             error_message = f"Original error: {str(original_exception)}" if original_exception else str(e)
             return Response({"error": error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-def data_representation(request):#graph er jonno eita 
-    user_id = request.user.id  # Geting user id to fetch the data
+from collections import defaultdict
+import json
+from django.http import JsonResponse
+
+def data_representation(request, test_name):
+    user_id = request.user.id  # Get user id to fetch the data
     print(f"User ID: {user_id}")
 
-    reports = LabReport.objects.filter(user=user_id)
+    # Fetch reports for the user and the specific test name
+    reports = LabReport.objects.filter(user=user_id, test_name=test_name)
     print(f"Reports for user {user_id}: {reports}")
 
-    combined_report_data = defaultdict(lambda: {"description": "", "result": [
-    ], "ref_range": "", "unit": ""})  # initiazing the structure of the response
+    # Initialize the structure of the response
+    combined_report_data = defaultdict(lambda: {"description": "", "result": [], "ref_range": "", "unit": ""})
 
     for report in reports:
         print(f"Processing report ID: {report.id}")
         print(f"Report Data: {report.report_data}")
 
         # Clean and prepare the JSON data for decoding
-        cleaned_data = report.report_data.strip()
-        cleaned_data = cleaned_data.replace('```json', '').replace('```', '')
-        cleaned_data = cleaned_data.strip()
+        cleaned_data = report.report_data.strip().replace('```json', '').replace('```', '')
 
         if cleaned_data:
             try:
@@ -284,22 +286,23 @@ def data_representation(request):#graph er jonno eita
                 report_data_list = json.loads(cleaned_data)
                 print(f"Decoded JSON: {report_data_list}")
 
+                # Iterate over the list of dictionaries in the JSON data
                 for item in report_data_list:
                     description = item.get("description")
                     if description:
+                        # Initialize the description if not already done
                         if description not in combined_report_data:
-                            combined_report_data[description]["description"] = item.get(
-                                "description", "")
-                            combined_report_data[description]["ref_range"] = item.get(
-                                "ref_range", "")
-                            combined_report_data[description]["unit"] = item.get(
-                                "unit", "")
+                            combined_report_data[description]["description"] = description
+                            combined_report_data[description]["ref_range"] = item.get("ref_range", "")
+                            combined_report_data[description]["unit"] = item.get("unit", "")
 
                         # Append result if it exists
                         result = item.get("result")
                         if result:
                             combined_report_data[description]["result"].append(
                                 {report.report_date.strftime('%Y-%m-%d'): result})
+                else:
+                    print(f"Item without description found in report {report.id}: {item}")
 
             except json.JSONDecodeError as e:
                 print(f"Error decoding JSON for report {report.id}: {e}")
@@ -312,6 +315,8 @@ def data_representation(request):#graph er jonno eita
     print(f"Final Result Data: {result_data}")
 
     return JsonResponse(result_data, safe=False)
+
+ 
 
 
 
