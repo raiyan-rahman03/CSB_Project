@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from .models import LabReport
 from collections import defaultdict
@@ -32,8 +33,6 @@ class AspireResponseView(APIView):
             user = User.objects.get(id=user_id)
 
             image_file = request.FILES['file']
-            
-            
 
             receipt_ocr_endpoint = 'https://ocr.asprise.com/api/v1/receipt'
             r = requests.post(receipt_ocr_endpoint, data={
@@ -114,7 +113,8 @@ class GeminiStep1APIView(APIView):
         try:
             user_id = request.data.get('user_id')
             temp_report_id = request.data.get('temporary_report_id')
-            temp_report = TemporaryLabReport.objects.get(id=temp_report_id, user_id=user_id)
+            temp_report = TemporaryLabReport.objects.get(
+                id=temp_report_id, user_id=user_id)
 
             prompt1 = '''I have some text from a lab report obtained through OCR. It's a bit messy, and I'd like to clean it up and organize the data nicely in text.
             Present the information in plain text, don't use tables.
@@ -135,13 +135,16 @@ class GeminiStep1APIView(APIView):
             return Response({"error": str(e)}, status=500)
 
 # Step 3: GeminiStep2APIView
+
+
 class GeminiStep2APIView(APIView):
 
     def post(self, request, *args, **kwargs):
         try:
             user_id = request.data.get('user_id')
             temp_report_id = request.data.get('temporary_report_id')
-            temp_report = TemporaryLabReport.objects.get(id=temp_report_id, user_id=user_id)
+            temp_report = TemporaryLabReport.objects.get(
+                id=temp_report_id, user_id=user_id)
 
             prompt2 = (
                 "I have an OCR-extracted text from a medical lab report. "
@@ -157,7 +160,7 @@ class GeminiStep2APIView(APIView):
                 '    {"description": "Total Leucocyte Count", "result": "5000", "ref_range": "4000-10000", "unit": "/cumm"},\n'
                 '    {"description": "Neutrophils", "result": "50", "ref_range": "40-80", "unit": "%"},\n'
                 '    {"description": "Lymphocytes", "result": "40", "ref_range": "20-40", "unit": "%"},\n'
-                '    {"description": "Eosinophils", "result": "", "ref_range": "1-6", "unit": "%"},\n'    
+                '    {"description": "Eosinophils", "result": "", "ref_range": "1-6", "unit": "%"},\n'
                 '    {"description": "Basophils", "result": "0.00", "ref_range": "0-1", "unit": "%"},\n'
                 '    {"description": "Absolute Neutrophils", "result": "2500.00", "ref_range": "2000-7000", "unit": "/cumm"},\n'
                 '    {"description": "Absolute Lymphocytes", "result": "2000.00", "ref_range": "1000-3000", "unit": "/cumm"},\n'
@@ -171,7 +174,8 @@ class GeminiStep2APIView(APIView):
             gemini_json_final = gemini_response(prompt2)
             data_for_clean = gemini_response(prompt2)
             data_ = data_for_clean.strip()
-            cleaned_data = data_.replace('```json', '').replace('```', '').strip()
+            cleaned_data = data_.replace(
+                '```json', '').replace('```', '').strip()
 
             if cleaned_data:
                 # Decode the JSON data
@@ -236,19 +240,22 @@ class DatasetAPIView(APIView):
 
             # Step 1: Make a POST request to AspireResponseView
             aspire_url = 'http://localhost:8000/ocr'  # Adjust URL as needed
-            response = requests.post(aspire_url, files={'file': image_file}, data={'user_id': user_id})
+            response = requests.post(
+                aspire_url, files={'file': image_file}, data={'user_id': user_id})
             response_data = response.json()
             temporary_report_id = response_data['temporary_report_id']
 
             # Step 2: Make a POST request to GeminiStep1APIView
             gemini_prompt1_url = 'http://localhost:8000/gemini_prompt1'  # Adjust URL as needed
-            response = requests.post(gemini_prompt1_url, data={'temporary_report_id': temporary_report_id, 'user_id': user_id})
+            response = requests.post(gemini_prompt1_url, data={
+                                     'temporary_report_id': temporary_report_id, 'user_id': user_id})
             response_data = response.json()
             temporary_report_id = response_data['temporary_report_id']
 
             # Step 3: Make a POST request to GeminiStep2APIView
             gemini_prompt2_url = 'http://localhost:8000/gemini_prompt2'  # Adjust URL as needed
-            response = requests.post(gemini_prompt2_url, data={'temporary_report_id': temporary_report_id, 'user_id': user_id})
+            response = requests.post(gemini_prompt2_url, data={
+                                     'temporary_report_id': temporary_report_id, 'user_id': user_id})
             gemini_json_final = response.json()
 
             # Return the final JSON response
@@ -256,12 +263,10 @@ class DatasetAPIView(APIView):
 
         except Exception as e:
             original_exception = e.__cause__
-            error_message = f"Original error: {str(original_exception)}" if original_exception else str(e)
+            error_message = f"Original error: {str(original_exception)}" if original_exception else str(
+                e)
             return Response({"error": error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-from collections import defaultdict
-import json
-from django.http import JsonResponse
 
 def data_representation(request, test_name):
     user_id = request.user.id  # Get user id to fetch the data
@@ -271,11 +276,9 @@ def data_representation(request, test_name):
 # Get the id of the test_instance
     test_id = test_instance.id
 
-
     # Fetch reports for the user and the specific test name
     reports = LabReport.objects.filter(user=user_id, test_name=test_id)
     print(f"Reports for user {user_id}: {reports}")
-
 
     combined_report_data = defaultdict(lambda: {"description": "", "result": [
     ], "ref_range": "", "unit": ""})  # initiazing the structure of the response
@@ -320,10 +323,41 @@ def data_representation(request, test_name):
 def report_names_get(request):
     user_id = request.user.id
     reports = Test.objects.filter(user_id=user_id)
-    names = reports.values_list('name', flat=True)  # Extracting only the test_name field as a list
+    # Extracting only the test_name field as a list
+    names = reports.values_list('name', flat=True)
 
     return JsonResponse(list(names), safe=False)
 
+
+def report_images(request, name):
+    user_id = request.user.id
+
+    # Get the test ID based on the test name
+    test = get_object_or_404(Test, name=name)
+    test_id = test.id
+
+    # Filter reports based on test ID and user ID
+    reports = LabReport.objects.filter(test_name=test_id, user_id=user_id)
+    report_data = []
+
+    for report in reports:
+        try:
+            image = LabReportImage.objects.get(lab_report=report)
+            image_url = image.image.url
+        except LabReportImage.DoesNotExist:
+            image_url = None
+
+        report_data.append({
+
+            'id': report.id,
+            'name':str(report.test_name),
+            'date': report.report_date,  # assuming there's a date field
+            'sample': report.sample,     # assuming there's a sample field
+            'image_url': image_url,
+        })
+
+    # Return the report data as a JSON response
+    return JsonResponse({'report_data': report_data})
 
 
 # crud sytem building blocks
@@ -348,7 +382,7 @@ class AppointmentRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView
     serializer_class = AppointmentSerializer
 
 
-#templates rendering views
+# templates rendering views
 def index(request):
     return render(request, 'index.html')
 
@@ -360,5 +394,9 @@ def chat_with_doctor(request):
 def profile(request):
     return render(request, 'profile.html')
 
+
 def chart(request):
     return render(request, 'chart.html')
+
+def image(request):
+    return render(request, 'image_view.html')

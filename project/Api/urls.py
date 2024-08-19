@@ -2,6 +2,8 @@
 from django.urls import path
 from . views import *
 from django.views.generic import RedirectView
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('accounts/profile/', RedirectView.as_view(url='http://127.0.0.1:8000/home', permanent=True)),
@@ -22,6 +24,9 @@ urlpatterns = [
     path('appointments/<int:pk>/', AppointmentRetrieveUpdateDestroyView.as_view(), name='appointment-detail'),
 
     path('test_names',report_names_get),
-    path('ch/<str:test_name>',data_representation)
-]
+    path('ch/<str:test_name>',data_representation),
+    path('image/<str:name>',report_images),
+    path('img',image)
+
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

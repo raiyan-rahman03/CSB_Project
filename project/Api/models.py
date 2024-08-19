@@ -15,7 +15,7 @@ class Profile(models.Model):
         return f"{self.user.username} - {self.role}"
     
 class TemporaryLabReport(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='temporary_lab_reports')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='lab_reports')
     ocr_text = models.TextField(null=True, blank=True)
     gemini_prompt1_response = models.TextField(null=True, blank=True)
     original_report_date = models.DateField(null=True, blank=True)
@@ -33,7 +33,7 @@ class Test(models.Model):
         return self.name
 
 class LabReport(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='lab_reports')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, )
     test_name = models.ForeignKey(Test, on_delete=models.CASCADE, related_name='lab_reports',null=True)
     sample = models.CharField(max_length=200, null=True, blank=True)
     report_data = models.JSONField()
