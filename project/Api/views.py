@@ -1,7 +1,7 @@
 from django.utils import timezone
 from .models import LabReport
 from collections import defaultdict
-from .models import TemporaryLabReport, LabReport, LabReportImage
+from .models import *
 from django.contrib.auth.models import User
 from .serializers import ProfileSerializer, AppointmentSerializer
 from .models import Profile, Appointment
@@ -174,39 +174,40 @@ class GeminiStep2APIView(APIView):
             cleaned_data = data_.replace('```json', '').replace('```', '').strip()
 
             if cleaned_data:
-                
-                    # Decode the JSON data
-                    report_data_list = json.loads(cleaned_data)
+                # Decode the JSON data
+                report_data_list = json.loads(cleaned_data)
 
-                    # Initialize variables for test_name and sample
-                    test_name = None
-                    sample = None
+                # Initialize variables for test_name and sample
+                test_name = None
+                sample = None
 
-                    # Separate test_name and sample from the main data
-                    for item in report_data_list:
-                        if 'test_name' in item:
-                            test_name = item['test_name']
-                        elif 'sample' in item:
-                            sample = item['sample']
+                # Separate test_name and sample from the main data
+                for item in report_data_list:
+                    if 'test_name' in item:
+                        test_name = item['test_name']
+                        break
+                for item in report_data_list:
+                    if 'sample' in item:
+                        sample = item['sample']
+                        break
 
-                        test_name_mod=test_name
-                        test_sample_mod=sample     
-                                    
-            
+                # Check if the test_name already exists in the Test model
+                test_instance, created = Test.objects.get_or_create(
+                    user=temp_report.user,
+                    name=test_name
+                )
 
-            user = temp_report.user
-
-            # Create LabReport instance
-            lab_report = LabReport.objects.create(
-                user=user,
-                test_name=test_name_mod,
-                sample=test_sample_mod,
-                report_data=gemini_json_final,
-                report_date=temp_report.original_report_date,
-                uploaded_at=timezone.now(),
-                ocr_conf=temp_report.ocr_confidence,
-                hospital_address=temp_report.address_of_hospital
-            )
+                # Create LabReport instance
+                lab_report = LabReport.objects.create(
+                    user=temp_report.user,
+                    test_name=test_instance,
+                    sample=sample,
+                    report_data=gemini_json_final,
+                    report_date=temp_report.original_report_date,
+                    uploaded_at=timezone.now(),
+                    ocr_conf=temp_report.ocr_confidence,
+                    hospital_address=temp_report.address_of_hospital
+                )
 
             # Create LabReportImage instance
             LabReportImage.objects.create(
@@ -265,58 +266,63 @@ from django.http import JsonResponse
 def data_representation(request, test_name):
     user_id = request.user.id  # Get user id to fetch the data
     print(f"User ID: {user_id}")
+    test_instance = Test.objects.get(user=user_id, name=test_name)
+
+# Get the id of the test_instance
+    test_id = test_instance.id
+
 
     # Fetch reports for the user and the specific test name
-    reports = LabReport.objects.filter(user=user_id, test_name=test_name)
+    reports = LabReport.objects.filter(user=user_id, test_name=test_id)
     print(f"Reports for user {user_id}: {reports}")
 
-    # Initialize the structure of the response
-    combined_report_data = defaultdict(lambda: {"description": "", "result": [], "ref_range": "", "unit": ""})
 
+    combined_report_data = defaultdict(lambda: {"description": "", "result": [
+    ], "ref_range": "", "unit": ""})  # initiazing the structure of the response
     for report in reports:
         print(f"Processing report ID: {report.id}")
         print(f"Report Data: {report.report_data}")
-
         # Clean and prepare the JSON data for decoding
-        cleaned_data = report.report_data.strip().replace('```json', '').replace('```', '')
-
+        cleaned_data = report.report_data.strip()
+        cleaned_data = cleaned_data.replace('```json', '').replace('```', '')
+        cleaned_data = cleaned_data.strip()
         if cleaned_data:
             try:
                 # Decode the JSON data
                 report_data_list = json.loads(cleaned_data)
                 print(f"Decoded JSON: {report_data_list}")
-
-                # Iterate over the list of dictionaries in the JSON data
                 for item in report_data_list:
                     description = item.get("description")
                     if description:
-                        # Initialize the description if not already done
                         if description not in combined_report_data:
-                            combined_report_data[description]["description"] = description
-                            combined_report_data[description]["ref_range"] = item.get("ref_range", "")
-                            combined_report_data[description]["unit"] = item.get("unit", "")
-
+                            combined_report_data[description]["description"] = item.get(
+                                "description", "")
+                            combined_report_data[description]["ref_range"] = item.get(
+                                "ref_range", "")
+                            combined_report_data[description]["unit"] = item.get(
+                                "unit", "")
                         # Append result if it exists
                         result = item.get("result")
                         if result:
                             combined_report_data[description]["result"].append(
                                 {report.report_date.strftime('%Y-%m-%d'): result})
-                else:
-                    print(f"Item without description found in report {report.id}: {item}")
-
             except json.JSONDecodeError as e:
                 print(f"Error decoding JSON for report {report.id}: {e}")
                 continue  # Skip this report if there's a decoding error
         else:
             print(f"Empty or invalid report_data for report {report.id}")
-
     # Prepare final result data
     result_data = list(combined_report_data.values())
     print(f"Final Result Data: {result_data}")
-
     return JsonResponse(result_data, safe=False)
 
- 
+
+def report_names_get(request):
+    user_id = request.user.id
+    reports = Test.objects.filter(user_id=user_id)
+    names = reports.values_list('name', flat=True)  # Extracting only the test_name field as a list
+
+    return JsonResponse(list(names), safe=False)
 
 
 

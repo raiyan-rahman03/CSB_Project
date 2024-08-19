@@ -24,18 +24,26 @@ class TemporaryLabReport(models.Model):
     address_of_hospital=models.TextField(null=True, blank=True)
     image = models.ImageField(upload_to='temp_lab_img',null=True)
 
+
+class Test(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tests')
+    name = models.CharField(max_length=200 ,blank=True,null=True)
+
+    def __str__(self):
+        return self.name
+
 class LabReport(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='lab_reports')
-    test_name=models.CharField(max_length=200, null=True,blank=True)
-    sample=models.CharField( max_length=200,null=True,blank=True)
+    test_name = models.ForeignKey(Test, on_delete=models.CASCADE, related_name='lab_reports',null=True)
+    sample = models.CharField(max_length=200, null=True, blank=True)
     report_data = models.JSONField()
     report_date = models.DateField()
     uploaded_at = models.DateTimeField(auto_now_add=True)
-    ocr_conf=models.TextField(null=True, blank=True)
-    hospital_address=models.TextField(null=True, blank=True)
+    ocr_conf = models.TextField(null=True, blank=True)
+    hospital_address = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return f"Lab Report {self.id} by {self.user.username} on {self.report_date}"
+        return f"Lab Report  for {self.test_name} by {self.user.username} on {self.report_date}"
 
 class LabReportImage(models.Model):
     lab_report = models.ForeignKey(LabReport, on_delete=models.CASCADE, related_name='images')

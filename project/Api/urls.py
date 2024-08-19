@@ -20,6 +20,8 @@ urlpatterns = [
     path('profiles/<int:pk>/', ProfileRetrieveUpdateDestroyView.as_view(), name='profile-detail'),
     path('appointments/', AppointmentListCreateView.as_view(), name='appointment-list-create'),
     path('appointments/<int:pk>/', AppointmentRetrieveUpdateDestroyView.as_view(), name='appointment-detail'),
+
+    path('test_names',report_names_get),
     path('ch/<str:test_name>',data_representation)
 ]
 
