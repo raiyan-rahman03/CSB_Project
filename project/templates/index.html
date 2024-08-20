@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}">
+    <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
 </head>
 <body>
     <header>
@@ -28,7 +29,7 @@
                         <li><a href="http://127.0.0.1:8000/index">Home</a></li>
                         <li><a href="http://127.0.0.1:8000/chart">Report</a></li>
                         <li><a href="#">Talk With Doctor</a></li>
-                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#contact-us">Contact Us</a></li>
 
                     </ul>
                 </div>
@@ -48,7 +49,7 @@
 
         <div class="header flex-row container">
             <div class="content-side two-side-div">
-                <h1>
+                <h1 class="top-fonts">
                     Med Visual
                 </h1>
                 <p>
@@ -61,14 +62,14 @@
                 </button>
             </div>
             <div class="image-side two-side-div">
-                <img src="{% static 'images/home_header.png' %}" alt="Home Header">
+                <img src="{% static 'images/header.jpg' %}" alt="Home Header">
             </div>
         </div>
     </header>
 
     <section id="book-apoinment" class="container">
         <div class="book-apoinment-wrapper flex-column">
-            <h1>Book Appointment</h1>
+            <h1 class="top-fonts">Book Appointment</h1>
             <div class="top-appointment-line flex-row space_between">
                 <div class="appoinment-section-wrapper flex-column">
                     <p>Patient's Name</p>
@@ -87,6 +88,7 @@
                 <p>Problem</p>
                 <input type="text">
             </div>
+            <button class="btn">Send Appoinment</button>
         </div>
     </section>
 
@@ -96,7 +98,7 @@
         </div>
 
         <div class="content-side two-side-div">
-            <h1>About Us</h1>
+            <h1 class="top-fonts">About Us</h1>
             <p>
                 At MedVisual, we are dedicated to enhancing healthcare through innovative technology. Our platform empowers doctors with detailed feedback and insights on disease patterns, while providing users with intuitive graphical interfaces to track their health metrics. By facilitating seamless communication between patients and medical professionals, we aim to improve diagnostic accuracy and treatment effectiveness, ensuring better health outcomes for everyone.
             </p>
@@ -107,7 +109,7 @@
     </section>
 
     <section id="services" class="container">
-        <h1 class="top-write">Hospital Treatment</h1>
+        <h1 class="top-write top-fonts">Hospital Treatment</h1>
         <div class="services-wrapper flex-row space_between">
             <div class="single-service">
                 <div class="single-service-img">
@@ -122,7 +124,7 @@
             </div>
             <div class="single-service">
                 <div class="single-service-img">
-                    <img src="{% static 'images/services/t1.png' %}" alt="Service 2">
+                    <img src="{% static 'images/services/t4.png' %}" alt="Service 2">
                 </div>
                 <h3>Nephrologist Care</h3>
                 <p>
@@ -133,7 +135,7 @@
             </div>
             <div class="single-service">
                 <div class="single-service-img">
-                    <img src="{% static 'images/services/t1.png' %}" alt="Service 3">
+                    <img src="{% static 'images/services/t3.png' %}" alt="Service 3">
                 </div>
                 <h3>Nephrologist Care</h3>
                 <p>
@@ -146,7 +148,7 @@
     </section>
 
     <section id="doctor" class="container">
-        <h1 class="top-write">OUR DOCTORS</h1>
+        <h1 class="top-write top-fonts">OUR DOCTORS</h1>
         <div class="doctor-wrapper space_around flex-row owl-carousel">
             <div class="single-doctor">
                 <div class="doctor-image">
@@ -218,12 +220,14 @@
 
     <section id="contact-us" class="container flex-row">
         <div class="two-side-div">
-            <h2>Contact Us</h2>
-            <input type="text" placeholder="Full Name">
-            <input type="email" placeholder="Email">
-            <input type="number" placeholder="Phone Number">
-            
-            <button class="btn">Send</button>
+            <form action="" class="contact-us">
+                <h2 class="top-fonts">Contact Us</h2>
+                <input type="text" placeholder="Full Name">
+                <input type="email" placeholder="Email">
+                <input type="number" placeholder="Phone Number">
+                <input type="textarea" placeholder="Message">
+                <button class="btn">Send</button>
+            </form>
         </div>
         <div class="two-side-div">
             <img src="{% static 'images/contact-us.png' %}" alt="Contact Us">
@@ -232,7 +236,7 @@
 
     <footer>
         <div class="footer">
-            <h2>MedVisual</h2>
+            <h2 class="top-fonts">MedVisual</h2>
             <div class="about-us-footer">
                 <ul class="flex-row space_around">
                     <li class="flex-column">
