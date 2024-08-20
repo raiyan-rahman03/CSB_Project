@@ -16,18 +16,26 @@
             background-color: #b3c8ff;
         }
         .container {
+            display: flex;
+            flex-wrap: wrap;
             background: #f8faff;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             padding: 20px;
             width: 100%;
-            max-width: 1000px;
+            max-width: 1200px;
             box-sizing: border-box;
             margin: 20px;
+        }
+        .report-section {
+            flex: 1;
+            max-width: 30%;
+            margin-right: 20px;
         }
         .header-container {
             text-align: center;
             margin-bottom: 20px;
+            flex-basis: 100%;
         }
         h1 {
             margin: 0;
@@ -71,6 +79,11 @@
         th {
             background-color: #f2f2f2;
         }
+        td img {
+            max-width: 100%;
+            max-height: 200px; /* Limiting image height */
+            object-fit: cover; /* Maintain aspect ratio */
+        }
         .view-toggle {
             display: flex;
             justify-content: space-around;
@@ -98,6 +111,10 @@
                 width: 100%;
             }
         }
+        .main-section {
+            flex: 2;
+            min-width: 70%;
+        }
         /* Modal styling */
         #imageModal {
             display: none;
@@ -113,10 +130,12 @@
             align-items: center;
         }
         #modalImage {
-            margin: auto;
+            width: auto;
+            height: auto;
+            max-width: 100%;
+            max-height: 100%;
             display: block;
-            max-width: 80%;
-            max-height: 80%;
+            margin: auto;
         }
         .close {
             position: absolute;
@@ -136,57 +155,75 @@
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
-</head>
-<body>
-    <div> 
-        <label for="testNamesDropdown">Select a Report to see:</label>
-        <select id="testNamesDropdown">
-            <option value="" selected disabled>Select a test name</option>
-        </select>
+    </head>
+    <body>
+    <div class="container">
+        <div class="report-section">
+            <label for="testNamesDropdown">Select a Report to see:</label>
+            <select id="testNamesDropdown">
+                <option value="" selected disabled>Select a test name</option>
+            </select>
+            <div>
+                <h1>Lab Report Data</h1>
+                <table id="reportTable">
+                    <thead>
+                        <tr>
+                            <th>Report Name</th>
+                            <th>Date</th>
+                            <th>Sample</th>
+                            <th>Image</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Data rows will be inserted here by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="main-section">
+            <div class="header-container">
+                <h1>Test Results Overview of {{request.user.username}}</h1>
+                <p>Age: <span id="user-age">--</span></p>
+                <p>Gender: <span id="user-gender">--</span></p>
+            </div>
+            <select id="test-dropdown">
+                <option value="">Select a test</option>
+            </select>
+            <div class="view-toggle">
+                <button id="graph-view" class="active">Graph View</button>
+                <button id="table-view">Table View</button>
+            </div>
+            <input type="text" id="start-date" placeholder="From this date" 
+            onfocus="(this.type='date')" 
+            onblur="(this.type='text'); if(!this.value) this.placeholder='From this date';" />
+            <input type="text" id="end-date" placeholder="Upto this date" 
+            onfocus="(this.type='date')" 
+            onblur="(this.type='text'); if(!this.value) this.placeholder='Upto this date';" />
+     
+            <canvas id="myChart"></canvas>
+            <table id="result-table" style="display:none;">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Result</th>
+                        <th>Name</th>
+                        <th>Reference Value</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
     </div>
     
-    <div class="container">
-        <div class="header-container">
-            <h1>Test Results Overview of {{request.user.username}}</h1>
-            <p>Age: <span id="user-age">--</span></p>
-            <p>Gender: <span id="user-gender">--</span></p>
-        </div>
-        <select id="test-dropdown">
-            <option value="">Select a test</option>
-        </select>
-        <div class="view-toggle">
-            <button id="graph-view" class="active">Graph View</button>
-            <button id="table-view">Table View</button>
-        </div>
-        <input type="text" id="start-date" placeholder="From this date" 
-        onfocus="(this.type='date')" 
-        onblur="(this.type='text'); if(!this.value) this.placeholder='From this date';" />
-        <input type="text" id="end-date" placeholder="Upto this date" 
-        onfocus="(this.type='date')" 
-        onblur="(this.type='text'); if(!this.value) this.placeholder='Upto this date';" />
- 
-        <canvas id="myChart"></canvas>
-        <table id="result-table" style="display:none;">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Result</th>
-                    <th>Name</th>
-                    <th>Reference Value</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div>
-
     <!-- Modal for displaying images -->
     <div id="imageModal">
         <span class="close">&times;</span>
         <img class="modal-content" id="modalImage">
     </div>
     
+    
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+         document.addEventListener('DOMContentLoaded', function() {
             const testNamesDropdown = document.getElementById('testNamesDropdown');
             const testDropdown = document.getElementById('test-dropdown');
             const startDateInput = document.getElementById('start-date');
@@ -196,9 +233,10 @@
             const tableBody = resultTable.querySelector('tbody');
             const graphViewButton = document.getElementById('graph-view');
             const tableViewButton = document.getElementById('table-view');
+            const reportTableBody = document.getElementById('reportTable').getElementsByTagName('tbody')[0];
             let chart;
             let tests = [];
-        
+
             // Fetch and populate the test names dropdown
             fetch('http://127.0.0.1:8000/test_names')
                 .then(response => response.json())
@@ -211,41 +249,103 @@
                     });
                 })
                 .catch(error => console.error('Error fetching test names:', error));
-        
+
             // Function to fetch and update the content based on the selected value
-           function updateContent() {
-    const selectedTestName = testNamesDropdown.value;
+            function updateContent() {
+                const selectedTestName = testNamesDropdown.value;
+                if (selectedTestName) {
+                    const apiUrl = `http://127.0.0.1:8000/image/${encodeURIComponent(selectedTestName)}`;
 
-    //eita theke next code ta ashbe 
-    // image_view.html er script //
-    const apiUrl = `http://127.0.0.1:8000/ch/${encodeURIComponent(selectedTestName)}`;
+                    fetch(apiUrl)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`Network response was not ok: ${response.statusText}`);
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (Array.isArray(data.report_data)) {
+                                populateTable(data.report_data);
+                            } else {
+                                console.error('Expected report_data array:', data);
+                            }
+                        })
+                        .catch(error => console.error('Error fetching report data:', error));
+                } else {
+                    reportTableBody.innerHTML = '';
+                }
 
-    fetch(apiUrl)
-        .then(response => response.json())
-        .then(data => {
-            tests = data.map(test => ({
-                description: test.description,
-                result: test.result,
-                ref_range: test.ref_range,
-                unit: test.unit
-            }));
+                const chApiUrl = `http://127.0.0.1:8000/ch/${encodeURIComponent(selectedTestName)}`;
+                fetch(chApiUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        tests = data.map(test => ({
+                            description: test.description,
+                            result: test.result,
+                            ref_range: test.ref_range,
+                            unit: test.unit
+                        }));
 
-            // Populate the test-dropdown with test descriptions
-            testDropdown.innerHTML = '<option value="">Select a test</option>'; // Ensure first option is a placeholder
+                        // Populate the test-dropdown with test descriptions
+                        testDropdown.innerHTML = '<option value="">Select a test</option>';
+                        tests.forEach((test, index) => {
+                            const option = document.createElement('option');
+                            option.value = index;
+                            option.textContent = test.description;
+                            testDropdown.appendChild(option);
+                        });
 
-            tests.forEach((test, index) => {
-                const option = document.createElement('option');
-                option.value = index;
-                option.textContent = test.description;
-                testDropdown.appendChild(option);
-            });
+                        // Automatically trigger the change event for the first option
+                        if (tests.length > 0) {
+                            testDropdown.selectedIndex = 1;
+                            testDropdown.dispatchEvent(new Event('change'));
+                        }
+                    })
+                    .catch(error => console.error('Error fetching data:', error));
+            }
 
-            // Automatically trigger the change event for the first option
-            testDropdown.selectedIndex = 1; // Select the first valid option
-            testDropdown.dispatchEvent(new Event('change')); // Trigger the change event
-        })
-        .catch(error => console.error('Error fetching data:', error));
-}
+            function populateTable(reportData) {
+                reportTableBody.innerHTML = ''; // Clear existing table rows
+                reportData.forEach(item => {
+                    const row = reportTableBody.insertRow();
+                    const nameCell = row.insertCell();
+                    nameCell.textContent = item.name || 'N/A';
+                    const dateCell = row.insertCell();
+                    dateCell.textContent = item.date || 'N/A';
+                    const sampleCell = row.insertCell();
+                    sampleCell.textContent = item.sample || 'N/A';
+                    const imageCell = row.insertCell();
+                    if (item.image_url) {
+                        const img = document.createElement('img');
+                        img.src = `${item.image_url}`;
+                        img.alt = 'Lab Report Image';
+                        img.onclick = () => showModal(img.src);
+                        imageCell.appendChild(img);
+                    } else {
+                        imageCell.textContent = 'No Image';
+                    }
+                });
+            }
+
+            // Modal functionality
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const closeBtn = document.querySelector('.close');
+
+            function showModal(src) {
+                modal.style.display = 'block';
+                modalImg.src = src;
+            }
+
+            closeBtn.onclick = () => {
+                modal.style.display = 'none';
+            }
+
+            window.onclick = event => {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                }
+            }
         
             // Function to toggle between graph and table views
             function toggleView(viewType) {

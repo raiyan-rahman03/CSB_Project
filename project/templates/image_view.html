@@ -71,6 +71,13 @@
 </head>
 <body>
     <h1>Lab Report Data</h1>
+    
+    <!-- Dropdown for selecting test names -->
+    <select id="testNamesDropdown" onchange="updateContent()">
+        <option value="">Select Test Name</option>
+        <!-- Options will be populated by JavaScript -->
+    </select>
+
     <table id="reportTable">
         <thead>
             <tr>
@@ -94,24 +101,49 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            fetch('http://127.0.0.1:8000/image/CBC')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`Network response was not ok: ${response.statusText}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('Report data:', data);  // Debug log
-                    if (Array.isArray(data.report_data)) {
-                        populateTable(data.report_data);
-                    } else {
-                        console.error('Expected report_data array:', data);
-                    }
-                })
-                .catch(error => console.error('Error fetching report data:', error));
-        });
+        const testNamesDropdown = document.getElementById('testNamesDropdown');
+
+        // Fetch and populate the test names dropdown
+        fetch('http://127.0.0.1:8000/test_names')
+            .then(response => response.json())
+            .then(data => {
+                data.filter(name => name !== null).forEach(name => {
+                    const option = document.createElement('option');
+                    option.value = name;
+                    option.textContent = name;
+                    testNamesDropdown.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error fetching test names:', error));
+        
+        // Function to fetch and update the content based on the selected value
+        function updateContent() {
+            const selectedTestName = testNamesDropdown.value;
+            if (selectedTestName) {
+                const apiUrl = `http://127.0.0.1:8000/image/${encodeURIComponent(selectedTestName)}`;
+                
+                fetch(apiUrl)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Network response was not ok: ${response.statusText}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('Report data:', data);  // Debug log
+                        if (Array.isArray(data.report_data)) {
+                            populateTable(data.report_data);
+                        } else {
+                            console.error('Expected report_data array:', data);
+                        }
+                    })
+                    .catch(error => console.error('Error fetching report data:', error));
+            } else {
+                // Clear the table if no test name is selected
+                const reportTableBody = document.getElementById('reportTable').getElementsByTagName('tbody')[0];
+                reportTableBody.innerHTML = '';
+            }
+        }
 
         function populateTable(reportData) {
             const reportTableBody = document.getElementById('reportTable').getElementsByTagName('tbody')[0];
