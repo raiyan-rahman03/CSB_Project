@@ -51,7 +51,7 @@ a:hover {
 p {
     font-family: 'Lora', serif;
 }
-a, button {
+a, button,span {
     font-family: 'Poppins', sans-serif;
 }
 
@@ -73,7 +73,7 @@ a, button {
 }
 
 .container {
-    padding: 10% 5%;
+    padding:5%;
 }
 
 .container:first-child {
@@ -93,7 +93,7 @@ a, button {
 .btn{
     padding: 1rem 1.75rem;
     border: none;
-    background-color: var(--extra-color);
+    background-color: var(--secondary-color);
     color: var(--second-bg);
     border-radius: 0.75rem;
     display: block;
@@ -103,7 +103,7 @@ a, button {
 }
 
 .btn:hover {
-    background: var(--secondary-color);
+    background: #037a6e;
     cursor: pointer;
 }
 
@@ -255,15 +255,19 @@ nav ul li{
     font-size: 1.1rem;
 }
 
+.appoinment-section-wrapper{
+    width: 30%;
+}
+
 input {
-    width: 20rem;
-    height: 3rem;
+    width: 100%;
+    height: 3em;
     border:none;
 }
 
 .details-appointment-line input[type="text"]{
-    width: 72rem;
-    height: 8rem;
+    width: 100%;
+    height: 8em;
 }
 .details-appointment-line{
     margin-bottom: 2rem;
@@ -271,6 +275,9 @@ input {
 @media only screen and (max-width: 768px) {
     .top-appointment-line{
         flex-direction: column;
+    }
+    .appoinment-section-wrapper{
+        width: 75%;
     }
 }
 
@@ -320,8 +327,6 @@ input {
     text-align: center;
     border-radius: 0.5rem;
     background: linear-gradient(145deg, #d8dcdf, #ffffff);
-    box-shadow:  20px 20px 60px #cccfd3,
-             -20px -20px 60px #ffffff;
 }
 
 .doctor-image{
