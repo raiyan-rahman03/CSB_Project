@@ -28,7 +28,7 @@ from datetime import date
 
 
 def home(request):
-    return render(request, 'home.html')
+    return render(request, 'upload_image.html')
 
 
 # Step 1: AspireResponseView
