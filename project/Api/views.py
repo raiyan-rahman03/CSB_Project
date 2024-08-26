@@ -1,3 +1,5 @@
+from rest_framework.decorators import api_view
+from .models import Appointment, Profile
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from .models import LabReport
@@ -350,7 +352,7 @@ def report_images(request, name):
         report_data.append({
 
             'id': report.id,
-            'name':str(report.test_name),
+            'name': str(report.test_name),
             'date': report.report_date,  # assuming there's a date field
             'sample': report.sample,     # assuming there's a sample field
             'image_url': image_url,
@@ -359,8 +361,55 @@ def report_images(request, name):
     # Return the report data as a JSON response
     return JsonResponse({'report_data': report_data})
 
+# appointment logic
 
+
+def appointment(request):
+    user_profile = Profile.objects.get(user=request.user)
+
+    if user_profile.role == 'doctor':
+        appointments = Appointment.objects.filter(doctor=request.user)
+    else:
+        appointments = Appointment.objects.filter(patient=request.user)
+
+    # Convert each appointment to a dictionary
+    appointments_data = [
+        {
+            "id": appointment.id,
+            "doctor": appointment.doctor.id,
+            "patient": appointment.patient.id,
+            "appointment_date": appointment.appointment_date,
+            "apointment_time": appointment.apointment_time,
+            "status": appointment.status,
+            "zoom_meeting_id": appointment.zoom_meeting_id,
+            "zoom_join_link": appointment.zoom_join_link,
+        }
+        for appointment in appointments
+    ]
+
+    return JsonResponse(appointments_data, safe=False)
+
+
+@api_view(['POST'])
+def accept_appointment(request, id):
+    try:
+        # Fetch the selected appointment
+        selected_appointment = Appointment.objects.get(id=id)
+        
+        date=selected_appointment.appointment_date
+        time=selected_appointment.apointment_time
+        meet_id=selected_appointment.zoom_meeting_id
+        meet_link=selected_appointment.zoom_join_link
+        # Update the status to 'accepted'
+        selected_appointment.status = 'accepted'
+        selected_appointment.save()
+
+        return JsonResponse({'message': 'Appointment accepted successfully'}, status=200)
+
+    except Appointment.DoesNotExist:
+        return JsonResponse({'error': 'Appointment not found'}, status=404)
 # crud sytem building blocks
+
 
 class ProfileListCreateView(generics.ListCreateAPIView):
     queryset = Profile.objects.all()
@@ -383,6 +432,10 @@ class AppointmentRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView
 
 
 # templates rendering views
+def appointment_render(request):
+    return render(request, 'appointment.html')
+
+
 def index(request):
     return render(request, 'index.html')
 
@@ -397,6 +450,7 @@ def profile(request):
 
 def chart(request):
     return render(request, 'chart.html')
+
 
 def image(request):
     return render(request, 'image_view.html')

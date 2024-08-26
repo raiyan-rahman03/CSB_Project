@@ -63,8 +63,12 @@ class Appointment(models.Model):
 
     patient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='patient_appointments')
     doctor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='doctor_appointments')
-    appointment_date = models.DateTimeField()
+    appointment_date = models.DateField(null=True)
+    apointment_time=models.TimeField(null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES)
+    zoom_meeting_id = models.CharField(max_length=100, blank=True, null=True)
+    zoom_join_link = models.URLField(blank=True, null=True)
+    
 
     def __str__(self):
         return f"Appointment on {self.appointment_date} with Dr. {self.doctor.username}"

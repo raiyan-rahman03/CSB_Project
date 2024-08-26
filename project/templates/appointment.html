@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointments</title>
+    <script>
+        // Fetch the appointments when the page loads
+        document.addEventListener("DOMContentLoaded", function() {
+            fetchAppointments();
+        });
+
+        // Function to fetch and display appointments
+        function fetchAppointments() {
+            fetch('http://127.0.0.1:8000/appointments')
+                .then(response => response.json())
+                .then(data => {
+                    const appointmentsTable = document.getElementById('appointments-table');
+                    appointmentsTable.innerHTML = '';  // Clear previous data
+
+                    data.forEach(appointment => {
+                        const row = document.createElement('tr');
+
+                        row.innerHTML = `
+                            <td>${appointment.id}</td>
+                            <td>${appointment.doctor}</td>
+                            <td>${appointment.patient}</td>
+                            <td>${appointment.appointment_date}</td>
+                            <td>${appointment.apointment_time}</td>
+                            <td>${appointment.status}</td>
+                            <td>${appointment.zoom_meeting_id || 'N/A'}</td>
+                            <td>${appointment.zoom_join_link ? `<a href="${appointment.zoom_join_link}" target="_blank">Join Meeting</a>` : 'N/A'}</td>
+                            <td>
+                                ${appointment.status === 'pending' ? `<button onclick="acceptAppointment(${appointment.id})">Accept</button>` : 'Confirmed'}
+                            </td>
+                        `;
+
+                        appointmentsTable.appendChild(row);
+                    });
+                });
+        }
+
+        // Function to accept an appointment
+        function acceptAppointment(appointmentId) {
+            fetch(`http://127.0.0.1:8000/accept-appointment/${appointmentId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')  // Assuming Django's CSRF token
+                },
+                body: JSON.stringify({ status: 'confirmed' })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    fetchAppointments();  // Refresh the appointments list
+                } else {
+                    alert('Failed to accept appointment.');
+                }
+            });
+        }
+
+        // Function to get CSRF token from cookies
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+</head>
+<body>
+    <h1>Appointments</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Doctor</th>
+                <th>Patient</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Status</th>
+                <th>Zoom Meeting ID</th>
+                <th>Zoom Join Link</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="appointments-table">
+            <!-- Appointments will be dynamically loaded here -->
+        </tbody>
+    </table>
+</body>
+</html>
