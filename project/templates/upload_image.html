@@ -1,0 +1,104 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Image File</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/upload_image.css' %}">
+</head>
+<body>
+    <!-- <h1>Upload an Image File</h1> -->
+    <div class="image-upload-wrapper" id="wrapper">
+        <form action="http://127.0.0.1:8000/dataset" method="post" enctype="multipart/form-data">
+            
+            {% csrf_token %}
+            <div class="image-upload">
+                <!-- <label for="file">Choose an image file:</label> -->
+                <input type="file" id="file" name="file" accept="image/*" required>
+                <i class="fa fa-arrow-up" id="icon"></i>
+                <div class="file-info" id="fileInfo"></div>
+            </div>
+            <input type="submit" value="Upload" id="submitImg">
+        </form>
+    </div>
+
+    <section class="step-wizard" id="loader">
+        <ul class="step-wizard-list">
+            <li class="step-wizard-item current-item">
+                <span class="progress-count">1</span>
+                <span class="progress-label">Analysing The Image</span>
+            </li>
+            <li class="step-wizard-item">
+                <span class="progress-count">2</span>
+                <span class="progress-label"> OCR Is Doing The Magic</span>
+            </li>
+            <li class="step-wizard-item">
+                <span class="progress-count">3</span>
+                <span class="progress-label">Formating</span>
+            </li>
+            <li class="step-wizard-item">
+                <span class="progress-count">4</span>
+                <span class="progress-label">Success</span>
+            </li>
+        </ul>
+    </section>
+
+    <script>
+
+function advanceStep() {
+            const items = document.querySelectorAll('.step-wizard-item');
+            let currentIndex = -1;
+            
+            // Find the index of the current step
+            items.forEach((item, index) => {
+                if (item.classList.contains('current-item')) {
+                    currentIndex = index;
+                }
+            });
+
+            // Remove the current-item class from the current step
+            if (currentIndex >= 0) {
+                items[currentIndex].classList.remove('current-item');
+            }
+
+            // Move to the next step if there is one
+            if (currentIndex < items.length - 1) {
+                items[currentIndex + 1].classList.add('current-item');
+            }
+        }
+
+        const submit = document.getElementById('submitImg');
+
+        document.getElementById('file').addEventListener('change', function(event) {
+          const file = event.target.files[0];
+          const fileInfo = document.getElementById('fileInfo');
+          const icon = document.getElementById('icon');
+          if (file) {
+            fileInfo.textContent = `Selected file: ${file.name}`;
+          } else {
+            fileInfo.textContent = 'No file selected';
+          }
+          icon.style.display = 'none';
+          submit.style.display= 'block';
+          fileInfo.style.display= 'block';
+        });
+
+        submit.addEventListener('click', function() {
+            const wrapper = document.getElementById('wrapper');
+            wrapper.style.display = 'none'
+            const loader = document.getElementById('loader')
+            loader.style.display = 'flex'
+            setInterval(advanceStep, 2000);
+        })
+      </script>
+
+
+    <script src="https://kit.fontawesome.com/2f363fc945.js" crossorigin="anonymous"></script>
+
+
+
+
+</body>
+</html>
