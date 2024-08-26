@@ -6,6 +6,7 @@ from .models import *
 
 admin.site.register(Test)
 admin.site.register(TemporaryLabReport)
+admin.site.register(ZoomToken)
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
 

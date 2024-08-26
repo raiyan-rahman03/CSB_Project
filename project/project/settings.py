@@ -91,27 +91,27 @@ WSGI_APPLICATION = 'project.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
-
-
-
-
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'hackathon',
-#         'USER': 'root',
-#         'PASSWORD': 'root123',
-#         'HOST': 'localhost',   # Or your MySQL server's IP address
-#         'PORT': '3306',        # Default MySQL port
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+
+
+
+
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'hackathon',
+        'USER': 'root',
+        'PASSWORD': 'root123',
+        'HOST': 'localhost',   # Or your MySQL server's IP address
+        'PORT': '3306',        # Default MySQL port
+    }
+}
 
 
 
@@ -164,7 +164,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 SITE_ID = 1
 
