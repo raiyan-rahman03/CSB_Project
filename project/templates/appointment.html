@@ -1,9 +1,12 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Appointments</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <script>
         // Fetch the appointments when the page loads
         document.addEventListener("DOMContentLoaded", function() {
@@ -78,8 +81,47 @@
     </script>
 </head>
 <body>
-    <h1>Appointments</h1>
-    <table border="1">
+
+    <header>
+        <!-- Navbar -->
+        <nav>
+            <div class="flex-row space_around">
+                <div class="flex-row space_between logo-icon-wrapper">
+                    <div class="logo">
+                        <img src="{% static 'images/logo.png' %}" alt="Logo">
+                        <!-- <h2 class="top-fonts">M<span>ed</span>V<span>isual</span></h2> -->
+                    </div>
+                    <div class="icon-show-off" id="showContentButton">
+                        <span>+</span>
+                    </div>
+                </div>
+                <div class="nav-item">
+                    <ul class="flex-row space_around">
+                        <li><a href="http://127.0.0.1:8000/index">Home</a></li>
+                        <li><a href="http://127.0.0.1:8000/chart">Report</a></li>
+                        <li><a href="chat_with_doctor.html">Talk With Doctor</a></li>
+                        <li><a href="#contact-us">Contact Us</a></li>
+
+                    </ul>
+                </div>
+                <div class="user">
+                    <ul class="flex-row space_around">
+                        {% if user.is_authenticated %}
+                            <li><a href="http://127.0.0.1:8000/accounts/logout/">Logout</a></li>
+                        {% else %}
+                            <li><a href="http://127.0.0.1:8000/accounts/login/">Login</a></li>
+                            <li><a href="http://127.0.0.1:8000/accounts/signup/">SignUp</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+                
+            </div>
+        </nav>
+    </header>
+
+    <div class="appoinment-wrapper flex-column">
+    <h1 class="top-fonts">Appointments</h1>
+    <table>
         <thead>
             <tr>
                 <th>ID</th>
@@ -97,5 +139,9 @@
             <!-- Appointments will be dynamically loaded here -->
         </tbody>
     </table>
+</div>
+
+    <script src="{% static 'javascript/script.js' %}"></script>
+
 </body>
 </html>
