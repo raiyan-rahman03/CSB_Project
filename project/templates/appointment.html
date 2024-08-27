@@ -42,7 +42,7 @@
 
         // Function to accept an appointment
         function acceptAppointment(appointmentId) {
-            fetch(`http://127.0.0.1:8000/accept-appointment/${appointmentId}/`, {
+            fetch(`http://127.0.0.1:8000/appointments/accept/${appointmentId}/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

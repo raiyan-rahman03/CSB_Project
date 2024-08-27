@@ -24,15 +24,17 @@ urlpatterns = [
     #path('appointments/<int:pk>/', AppointmentRetrieveUpdateDestroyView.as_view(), name='appointment-detail'),
     path('appointments',appointment),
     path('appoint_temp',appointment_render),
-    path('accept-appointment/<str:id>/',accept_appointment),
+    path('zoom/authorize/',zoom_authorize, name='zoom_authorize'),
+    path('zoom/callback/',zoom_callback, name='zoom_callback'),
+    path('appointment/<int:id>/accept/',accept_appointment, name='accept_appointment'),
 
     path('test_names',report_names_get),
     path('ch/<str:test_name>',data_representation),
     path('image/<str:name>',report_images),
     path('img',image),
      #zoom part
-    path('zoom/authorize/', zoom_authorize, name='zoom_authorize'),
-    path('zoom/callback/', zoom_callback, name='zoom_callback'),
+    
+
     
 
 

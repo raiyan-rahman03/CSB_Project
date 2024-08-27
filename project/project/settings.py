@@ -176,6 +176,8 @@ AUTHENTICATION_BACKENDS = [
    
    
 ]
+# settings.py
+
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'SCOPE': [

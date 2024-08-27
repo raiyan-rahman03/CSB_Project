@@ -1,3 +1,9 @@
+from .models import Appointment, ZoomToken  # Assuming these are your models
+from datetime import datetime
+from django.views import View
+from .models import ZoomToken  # Ensure you have the correct import path
+from django.utils.timezone import make_aware
+from django.shortcuts import redirect, render
 from .models import ZoomToken
 from datetime import timedelta
 from django.utils.timezone import now, make_aware
@@ -394,44 +400,38 @@ def appointment(request):
     ]
 
     return JsonResponse(appointments_data, safe=False)
-from datetime import datetime
+
 
 def accept_appointment(request, id):
-    appointment = Appointment.objects.get(id=id)
+    appointment = get_object_or_404(Appointment, id=id)
 
-    if appointment:
-        appointment.status = 'accepted'
-        appointment.save()
+    # Update appointment status to 'accepted'
+    appointment.status = 'accepted'
+    appointment.save()
 
-        # Schedule Zoom meeting
+    # Combine date and time into a single datetime object
+    combined_datetime_str = f"{appointment.appointment_date}T{appointment.apointment_time}Z"
+    combined_datetime = datetime.strptime(
+        combined_datetime_str, "%Y-%m-%dT%H:%M:%S%z")
 
+    # Schedule Zoom meeting
+    meeting = schedule_zoom_meeting(
+        user=request.user,
+        topic=f"Appointment with {appointment.patient.username}",
+        start_time=combined_datetime,
+        duration=40  # Assuming a default duration of 40 minutes
+    )
 
-        # Combine date and time into a single datetime object
-        combined_datetime_str = f"{appointment.appointment_date}T{appointment.apointment_time}Z"
-        
-        # Parse the string to datetime
-        combined_datetime = datetime.strptime(combined_datetime_str, "%Y-%m-%dT%H:%M:%S%z")
+    # Update appointment with Zoom meeting details
+    appointment.zoom_meeting_id = meeting['id']
+    appointment.zoom_join_link = meeting['join_url']
+    appointment.save()
 
- 
-        # Print the formatted datetime string
-        encoded_time = combined_datetime.isoformat()
-        meeting = schedule_zoom_meeting(
-            user=request.user,
-            topic=f"Appointment with {appointment.patient.username}",
-            start_time=encoded_time,
-            duration=40  # Assuming a default duration of 30 minutes
-        )
-
-        appointment.zoom_meeting_id = meeting['id']
-        appointment.zoom_join_link = meeting['join_url']
-        appointment.save()
-
-        return JsonResponse({'message': 'Appointment accepted and Zoom meeting scheduled successfully'})
-    else:
-        return JsonResponse({'error': 'Appointment not found'}, status=404)
+    return JsonResponse({'message': 'Appointment accepted and Zoom meeting scheduled successfully'})
 
 
 # zoom part
+
 
 import base64
 import requests
@@ -455,11 +455,10 @@ def zoom_authorize(request):
 
     if user.is_authenticated:
         user_id = user.id
-        state = base64.urlsafe_b64encode(str(user_id).encode('utf-8')).decode('utf-8')
-        request.session['zoom_state'] = state  # Store the state in the session
+
         authorization_url = (
             "https://zoom.us/oauth/authorize?response_type=code"
-            f"&client_id={client_id}&redirect_uri={redirect_uri}&state={state}"
+            f"&client_id={client_id}&redirect_uri={redirect_uri}"
         )
         return redirect(authorization_url)
     else:
@@ -467,19 +466,9 @@ def zoom_authorize(request):
 
 def zoom_callback(request):
     code = request.GET.get('code')
-    state = request.session.get('zoom_state')
-
-    if not code or not state:
-        return JsonResponse({'error': 'Missing code or state parameter'}, status=400)
-
-    if state != request.GET.get('state'):
-        return JsonResponse({'error': 'Invalid state parameter'}, status=400)
-
-    # Remove the state from the session to prevent replay attacks
-    del request.session['zoom_state']
-
+   
     client_id = "EFqdN5uBTsys75PFdUZzQw"
-    client_secret = "5FFF0Rny5e87Xdhxad5zlrO1ZP3KrOC0"
+    client_secret = "XSr59gI7mYIDutt4x0FneMGqa5BlV4Bw"
     redirect_uri = "http://localhost:8000/zoom/callback/"
 
     auth_str = f"{client_id}:{client_secret}"
@@ -502,14 +491,15 @@ def zoom_callback(request):
     access_token = tokens.get('access_token')
     if not access_token:
         return JsonResponse({'error': 'Failed to retrieve access token', 'details': tokens}, status=400)
-
+    print(f"line 494 {access_token}")
     refresh_token = tokens.get('refresh_token')
+    print(f"line 496 {refresh_token}")
     expires_in = tokens.get('expires_in', 3600)  # Default to 3600 seconds if not provided
 
     expires_at = datetime.now() + timedelta(seconds=expires_in)
 
     ZoomToken.objects.update_or_create(
-        user=state,
+        user=1,
         defaults={
             'access_token': access_token,
             'refresh_token': refresh_token,
@@ -524,41 +514,59 @@ def zoom_callback(request):
         'expires_at': expires_at.strftime('%Y-%m-%d %H:%M:%S'),
         'token_response': tokens
     }, status=200)
+from datetime import datetime, timedelta
+from django.utils.timezone import make_aware
+import requests
+import base64
+from .models import ZoomToken
+
 def refresh_zoom_token(user):
-    token = ZoomToken.objects.get(user=user)
-    if token.expires_at <= datetime.now():
+    # Attempt to retrieve the token associated with the user
+    try:
+        token = ZoomToken.objects.get(user=user)
+    except ZoomToken.DoesNotExist:
+        token = None
+
+    # If the token is either not present or has expired, generate a new one
+    if not token or token.expires_at <= datetime.now():
         client_id = "EFqdN5uBTsys75PFdUZzQw"
         client_secret = "5FFF0Rny5e87Xdhxad5zlrO1ZP3KrOC0"
-        refresh_url = "https://zoom.us/oauth/token"
+        redirect_uri = "http://localhost:8000/zoom/callback/"
 
         auth_str = f"{client_id}:{client_secret}"
         auth_bytes = auth_str.encode('utf-8')
         auth_base64 = base64.b64encode(auth_bytes).decode('utf-8')
-        refresh_data = {
-            'grant_type': 'refresh_token',
-            'refresh_token': token.refresh_token
+
+        token_url = "https://zoom.us/oauth/token"
+        token_data = {
+            'grant_type': 'authorization_code',
+            'redirect_uri': redirect_uri,
         }
-        refresh_headers = {
+        token_headers = {
             'Authorization': f'Basic {auth_base64}'
         }
 
-        response = requests.post(refresh_url, data=refresh_data, headers=refresh_headers)
+        # Make a POST request to Zoom to get new tokens
+        response = requests.post(token_url, data=token_data, headers=token_headers)
         tokens = response.json()
 
-        access_token = tokens['access_token']
-        refresh_token = tokens['refresh_token']
-        expires_in = tokens['expires_in']
+        access_token = tokens.get('access_token')
+        refresh_token = tokens.get('refresh_token')
+        expires_in = tokens.get('expires_in', 3600)  # Default to 3600 seconds if not provided
+
         expires_at = datetime.now() + timedelta(seconds=expires_in)
 
-        # Update tokens in the database
-        token.access_token = access_token
-        token.refresh_token = refresh_token
-        token.expires_at = expires_at
-        token.save()
+        # Update or create the token in the database
+        token, created = ZoomToken.objects.update_or_create(
+            user=user,
+            defaults={
+                'access_token': access_token,
+                'refresh_token': refresh_token,
+                'expires_at': make_aware(expires_at),
+            }
+        )
 
     return token.access_token
-
-import requests
 
 def schedule_zoom_meeting(user, topic, start_time, duration):
     access_token = refresh_zoom_token(user)
@@ -579,10 +587,13 @@ def schedule_zoom_meeting(user, topic, start_time, duration):
         headers=headers,
         json=meeting_data
     )
+    
 
     return response.json()
 
+
 # crud sytem building blocks
+
 
 
 class ProfileListCreateView(generics.ListCreateAPIView):
