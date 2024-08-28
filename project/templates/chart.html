@@ -1,48 +1,16 @@
+{% extends 'components/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Results Chart</title>
-    <link rel="stylesheet" href="{% static 'css/chart.css' %}">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
-    </head>
-    <body>
-        <nav>
-            <div class="flex-row space_around">
-                <div class="flex-row space_between logo-icon-wrapper">
-                    <div class="logo">
-                        <img src="{% static 'images/logo.png' %}" alt="Logo">
-                        <!-- <h2 class="top-fonts">M<span>ed</span>V<span>isual</span></h2> -->
-                    </div>
-                    <div class="icon-show-off" id="showContentButton">
-                        <span>+</span>
-                    </div>
-                </div>
-                <div class="nav-item">
-                    <ul class="flex-row space_around">
-                        <li><a href="http://127.0.0.1:8000/index">Home</a></li>
-                        <li><a href="http://127.0.0.1:8000/chart">Report</a></li>
-                        <li><a href="chat_with_doctor.html">Talk With Doctor</a></li>
-                        <li><a href="#contact-us">Contact Us</a></li>
 
-                    </ul>
-                </div>
-                <div class="user">
-                    <ul class="flex-row space_around">
-                        {% if user.is_authenticated %}
-                            <li><a href="http://127.0.0.1:8000/accounts/logout/">Logout</a></li>
-                        {% else %}
-                            <li><a href="http://127.0.0.1:8000/accounts/login/">Login</a></li>
-                            <li><a href="http://127.0.0.1:8000/accounts/signup/">SignUp</a></li>
-                        {% endif %}
-                    </ul>
-                </div>
-                
-            </div>
-        </nav>
+{% block title %}Test Results Chart || MedVisual{% endblock %}
+
+
+{% block add_top %}
+<link rel="stylesheet" href="{% static 'css/chart.css' %}">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+{% endblock %}
+
+{% block content %}
     <div class="container">
         <div class="report-section">
             <label class="top-fonts" for="testNamesDropdown">Select a Report to see:</label>
@@ -109,356 +77,359 @@
         <img class="modal-content" id="modalImage">
     </div>
     
-    
+{% endblock %}
+
+{% block bottom %}
+    <script src="https://kit.fontawesome.com/2f363fc945.js" crossorigin="anonymous"></script>
     <script>
-         document.addEventListener('DOMContentLoaded', function() {
-            const testNamesDropdown = document.getElementById('testNamesDropdown');
-            const testDropdown = document.getElementById('test-dropdown');
-            const startDateInput = document.getElementById('start-date');
-            const endDateInput = document.getElementById('end-date');
-            const ctx = document.getElementById('myChart').getContext('2d');
-            const resultTable = document.getElementById('result-table');
-            const tableBody = resultTable.querySelector('tbody');
-            const graphViewButton = document.getElementById('graph-view');
-            const tableViewButton = document.getElementById('table-view');
-            const reportTableBody = document.getElementById('reportTable').getElementsByTagName('tbody')[0];
-            let chart;
-            let tests = [];
+        document.addEventListener('DOMContentLoaded', function () {
+    const testNamesDropdown = document.getElementById('testNamesDropdown');
+    const testDropdown = document.getElementById('test-dropdown');
+    const startDateInput = document.getElementById('start-date');
+    const endDateInput = document.getElementById('end-date');
+    const ctx = document.getElementById('myChart').getContext('2d');
+    const resultTable = document.getElementById('result-table');
+    const tableBody = resultTable.querySelector('tbody');
+    const graphViewButton = document.getElementById('graph-view');
+    const tableViewButton = document.getElementById('table-view');
+    const reportTableBody = document.getElementById('reportTable').getElementsByTagName('tbody')[0];
+    let chart;
+    let tests = [];
 
-            // Fetch and populate the test names dropdown
-            fetch('http://127.0.0.1:8000/test_names')
-                .then(response => response.json())
-                .then(data => {
-                    data.filter(name => name !== null).forEach(name => {
-                        const option = document.createElement('option');
-                        option.value = name;
-                        option.textContent = name;
-                        testNamesDropdown.appendChild(option);
-                    });
-                })
-                .catch(error => console.error('Error fetching test names:', error));
+    // Fetch and populate the test names dropdown
+    fetch('http://127.0.0.1:8000/test_names')
+        .then(response => response.json())
+        .then(data => {
+            data.filter(name => name !== null).forEach(name => {
+                const option = document.createElement('option');
+                option.value = name;
+                option.textContent = name;
+                testNamesDropdown.appendChild(option);
+            });
+        })
+        .catch(error => console.error('Error fetching test names:', error));
 
-            // Function to fetch and update the content based on the selected value
-            function updateContent() {
-                const selectedTestName = testNamesDropdown.value;
-                if (selectedTestName) {
-                    const apiUrl = `http://127.0.0.1:8000/image/{{request.user.id}}/${encodeURIComponent(selectedTestName)}`;
+    // Function to fetch and update the content based on the selected value
+    function updateContent() {
+        const selectedTestName = testNamesDropdown.value;
+        if (selectedTestName) {
+            const apiUrl = `http://127.0.0.1:8000/image/{{request.user.id}}/${encodeURIComponent(selectedTestName)}`;
 
-                    fetch(apiUrl)
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error(`Network response was not ok: ${response.statusText}`);
-                            }
-                            return response.json();
-                        })
-                        .then(data => {
-                            if (Array.isArray(data.report_data)) {
-                                populateTable(data.report_data);
-                            } else {
-                                console.error('Expected report_data array:', data);
-                            }
-                        })
-                        .catch(error => console.error('Error fetching report data:', error));
-                } else {
-                    reportTableBody.innerHTML = '';
-                }
-
-                const chApiUrl = `http://127.0.0.1:8000/ch/{{request.user.id}}/${encodeURIComponent(selectedTestName)}`;
-                fetch(chApiUrl)
-                    .then(response => response.json())
-                    .then(data => {
-                        tests = data.map(test => ({
-                            description: test.description,
-                            result: test.result,
-                            ref_range: test.ref_range,
-                            unit: test.unit
-                        }));
-
-                        // Populate the test-dropdown with test descriptions
-                        testDropdown.innerHTML = '<option value="">Select a test</option>';
-                        tests.forEach((test, index) => {
-                            const option = document.createElement('option');
-                            option.value = index;
-                            option.textContent = test.description;
-                            testDropdown.appendChild(option);
-                        });
-
-                        // Automatically trigger the change event for the first option
-                        if (tests.length > 0) {
-                            testDropdown.selectedIndex = 1;
-                            testDropdown.dispatchEvent(new Event('change'));
-                        }
-                    })
-                    .catch(error => console.error('Error fetching data:', error));
-            }
-
-            function populateTable(reportData) {
-                reportTableBody.innerHTML = ''; // Clear existing table rows
-                reportData.forEach(item => {
-                    const row = reportTableBody.insertRow();
-                    const nameCell = row.insertCell();
-                    nameCell.textContent = item.name || 'N/A';
-                    const dateCell = row.insertCell();
-                    dateCell.textContent = item.date || 'N/A';
-                    const sampleCell = row.insertCell();
-                    sampleCell.textContent = item.sample || 'N/A';
-                    const imageCell = row.insertCell();
-                    if (item.image_url) {
-                        const img = document.createElement('img');
-                        img.src = `${item.image_url}`;
-                        img.alt = 'Lab Report Image';
-                        img.onclick = () => showModal(img.src);
-                        imageCell.appendChild(img);
-                    } else {
-                        imageCell.textContent = 'No Image';
+            fetch(apiUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Network response was not ok: ${response.statusText}`);
                     }
+                    return response.json();
+                })
+                .then(data => {
+                    if (Array.isArray(data.report_data)) {
+                        populateTable(data.report_data);
+                    } else {
+                        console.error('Expected report_data array:', data);
+                    }
+                })
+                .catch(error => console.error('Error fetching report data:', error));
+        } else {
+            reportTableBody.innerHTML = '';
+        }
+
+        const chApiUrl = `http://127.0.0.1:8000/ch/{{request.user.id}}/${encodeURIComponent(selectedTestName)}`;
+        fetch(chApiUrl)
+            .then(response => response.json())
+            .then(data => {
+                tests = data.map(test => ({
+                    description: test.description,
+                    result: test.result,
+                    ref_range: test.ref_range,
+                    unit: test.unit
+                }));
+
+                // Populate the test-dropdown with test descriptions
+                testDropdown.innerHTML = '<option value="">Select a test</option>';
+                tests.forEach((test, index) => {
+                    const option = document.createElement('option');
+                    option.value = index;
+                    option.textContent = test.description;
+                    testDropdown.appendChild(option);
                 });
-            }
 
-            // Modal functionality
-            const modal = document.getElementById('imageModal');
-            const modalImg = document.getElementById('modalImage');
-            const closeBtn = document.querySelector('.close');
+                // Automatically trigger the change event for the first option
+                if (tests.length > 0) {
+                    testDropdown.selectedIndex = 1;
+                    testDropdown.dispatchEvent(new Event('change'));
+                }
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    }
 
-            function showModal(src) {
-                modal.style.display = 'block';
-                modalImg.src = src;
+    function populateTable(reportData) {
+        reportTableBody.innerHTML = ''; // Clear existing table rows
+        reportData.forEach(item => {
+            const row = reportTableBody.insertRow();
+            const nameCell = row.insertCell();
+            nameCell.textContent = item.name || 'N/A';
+            const dateCell = row.insertCell();
+            dateCell.textContent = item.date || 'N/A';
+            const sampleCell = row.insertCell();
+            sampleCell.textContent = item.sample || 'N/A';
+            const imageCell = row.insertCell();
+            if (item.image_url) {
+                const img = document.createElement('img');
+                img.src = `${item.image_url}`;
+                img.alt = 'Lab Report Image';
+                img.onclick = () => showModal(img.src);
+                imageCell.appendChild(img);
+            } else {
+                imageCell.textContent = 'No Image';
             }
+        });
+    }
 
-            closeBtn.onclick = () => {
-                modal.style.display = 'none';
-            }
+    // Modal functionality
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImage');
+    const closeBtn = document.querySelector('.close');
 
-            window.onclick = event => {
-                if (event.target == modal) {
-                    modal.style.display = 'none';
-                }
-            }
-        
-            // Function to toggle between graph and table views
-            function toggleView(viewType) {
-                if (viewType === 'graph') {
-                    resultTable.style.display = 'none';
-                    document.getElementById('myChart').style.display = 'block';
-                    graphViewButton.classList.add('active');
-                    tableViewButton.classList.remove('active');
-                } else if (viewType === 'table') {
-                    document.getElementById('myChart').style.display = 'none';
-                    resultTable.style.display = 'table';
-                    tableViewButton.classList.add('active');
-                    graphViewButton.classList.remove('active');
-                }
-            }
-        
-            // Event listeners for view buttons
-            graphViewButton.addEventListener('click', function () {
-                toggleView('graph');
-            });
-        
-            tableViewButton.addEventListener('click', function () {
-                toggleView('table');
-            });
-        
-            // Event listener for the test names dropdown
-            testNamesDropdown.addEventListener('change', updateContent);
-        
-            // Event listener for the test-dropdown and date inputs
-            testDropdown.addEventListener('change', function() {
-                const selectedIndex = testDropdown.value;
-                const startDate = startDateInput.value ? new Date(startDateInput.value) : null;
-                const endDate = endDateInput.value ? new Date(endDateInput.value) : null;
-                if (selectedIndex !== "") {
-                    updateChart(selectedIndex, startDate, endDate);
-                    renderTable(selectedIndex, startDate, endDate);
-                }
-            });
-            startDateInput.addEventListener('change', function() {
-                const selectedIndex = testDropdown.value;
-                if (selectedIndex !== "") {
-                    updateChart(selectedIndex, new Date(startDateInput.value), endDateInput.value ? new Date(endDateInput.value) : null);
-                    renderTable(selectedIndex, new Date(startDateInput.value), endDateInput.value ? new Date(endDateInput.value) : null);
-                }
-            });
-            endDateInput.addEventListener('change', function() {
-                const selectedIndex = testDropdown.value;
-                if (selectedIndex !== "") {
-                    updateChart(selectedIndex, startDateInput.value ? new Date(startDateInput.value) : null, new Date(endDateInput.value));
-                    renderTable(selectedIndex, startDateInput.value ? new Date(startDateInput.value) : null, new Date(endDateInput.value));
-                }
-            });
-        
-            // Function to render the table
-            function renderTable(index, startDate, endDate) {
-                const test = tests[index];
-                if (!test) return;
-        
-                const sortedResults = test.result
-                    .map(entry => ({
-                        date: new Date(Object.keys(entry)[0]),
-                        value: Object.values(entry)[0]
-                    }))
-                    .filter(entry => (!startDate || entry.date >= startDate) && (!endDate || entry.date <= endDate))
-                    .sort((a, b) => a.date - b.date);
-        
-                tableBody.innerHTML = ''; // Clear previous table rows
-                sortedResults.forEach(entry => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
+    function showModal(src) {
+        modal.style.display = 'block';
+        modalImg.src = src;
+    }
+
+    closeBtn.onclick = () => {
+        modal.style.display = 'none';
+    }
+
+    window.onclick = event => {
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    }
+
+    // Function to toggle between graph and table views
+    function toggleView(viewType) {
+        if (viewType === 'graph') {
+            resultTable.style.display = 'none';
+            document.getElementById('myChart').style.display = 'block';
+            graphViewButton.classList.add('active');
+            tableViewButton.classList.remove('active');
+        } else if (viewType === 'table') {
+            document.getElementById('myChart').style.display = 'none';
+            resultTable.style.display = 'table';
+            tableViewButton.classList.add('active');
+            graphViewButton.classList.remove('active');
+        }
+    }
+
+    // Event listeners for view buttons
+    graphViewButton.addEventListener('click', function () {
+        toggleView('graph');
+    });
+
+    tableViewButton.addEventListener('click', function () {
+        toggleView('table');
+    });
+
+    // Event listener for the test names dropdown
+    testNamesDropdown.addEventListener('change', updateContent);
+
+    // Event listener for the test-dropdown and date inputs
+    testDropdown.addEventListener('change', function () {
+        const selectedIndex = testDropdown.value;
+        const startDate = startDateInput.value ? new Date(startDateInput.value) : null;
+        const endDate = endDateInput.value ? new Date(endDateInput.value) : null;
+        if (selectedIndex !== "") {
+            updateChart(selectedIndex, startDate, endDate);
+            renderTable(selectedIndex, startDate, endDate);
+        }
+    });
+    startDateInput.addEventListener('change', function () {
+        const selectedIndex = testDropdown.value;
+        if (selectedIndex !== "") {
+            updateChart(selectedIndex, new Date(startDateInput.value), endDateInput.value ? new Date(endDateInput.value) : null);
+            renderTable(selectedIndex, new Date(startDateInput.value), endDateInput.value ? new Date(endDateInput.value) : null);
+        }
+    });
+    endDateInput.addEventListener('change', function () {
+        const selectedIndex = testDropdown.value;
+        if (selectedIndex !== "") {
+            updateChart(selectedIndex, startDateInput.value ? new Date(startDateInput.value) : null, new Date(endDateInput.value));
+            renderTable(selectedIndex, startDateInput.value ? new Date(startDateInput.value) : null, new Date(endDateInput.value));
+        }
+    });
+
+    // Function to render the table
+    function renderTable(index, startDate, endDate) {
+        const test = tests[index];
+        if (!test) return;
+
+        const sortedResults = test.result
+            .map(entry => ({
+                date: new Date(Object.keys(entry)[0]),
+                value: Object.values(entry)[0]
+            }))
+            .filter(entry => (!startDate || entry.date >= startDate) && (!endDate || entry.date <= endDate))
+            .sort((a, b) => a.date - b.date);
+
+        tableBody.innerHTML = ''; // Clear previous table rows
+        sortedResults.forEach(entry => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
                         <td>${entry.date.toLocaleDateString()}</td>
                         <td>${entry.value}</td>
                         <td>${test.description}</td>
                         <td>${test.ref_range} ${test.unit}</td>
                     `;
-                    tableBody.appendChild(row);
-                });
-            }
-        
-            // Function to update the chart
-            function updateChart(index, startDate, endDate) {
-                const test = tests[index];
-                if (!test) return;
-        
-                if (chart) {
-                    chart.destroy();
-                }
-        
-                const sortedResults = test.result
-                    .map(entry => ({
-                        date: new Date(Object.keys(entry)[0]),
-                        value: parseFloat(Object.values(entry)[0])
-                    }))
-                    .filter(entry => (!startDate || entry.date >= startDate) && (!endDate || entry.date <= endDate))
-                    .sort((a, b) => a.date - b.date);
-        
-                const labels = sortedResults.map(entry => entry.date);
-                const dataValues = sortedResults.map(entry => entry.value);
-        
-                const refMin = parseFloat(test.ref_range.split('-')[0]);
-                const refMax = parseFloat(test.ref_range.split('-')[1]);
-                const chartMaxValue = Math.max(...dataValues, refMax) + 10;
-        
-                chart = new Chart(ctx, {
-    type: 'line',
-    data: {
-        labels: labels,
-        datasets: [
-            {
-                label: 'Results',
-                data: dataValues,
-                borderColor: 'rgba(0, 39, 77, 1)',
-                backgroundColor: 'rgba(0, 39, 77, 0.2)',
-                fill: false,
-                pointBackgroundColor: dataValues.map(value =>
-                    value < refMin
-                        ? 'rgba(0, 0, 255, 1)'
-                        : value > refMax
-                            ? 'rgba(255, 0, 0, 1)'
-                            : '#009688'
-                ),
-                pointBorderColor: dataValues.map(value =>
-                    value < refMin
-                        ? 'rgba(0, 0, 255, 1)'
-                        : value > refMax
-                            ? 'rgba(255, 0, 0, 1)'
-                            : '#009688'
-                ),
-                pointRadius: 5
-            },
-            {
-                label: 'Reference Range',
-                data: labels.map(() => refMax),
-                borderColor: 'rgba(0, 255, 0, 0)',
-                backgroundColor: 'rgba(0, 255, 0, 0.4)',
-                fill: {
-                    target: {
-                        value: refMin
+            tableBody.appendChild(row);
+        });
+    }
+
+    // Function to update the chart
+    function updateChart(index, startDate, endDate) {
+        const test = tests[index];
+        if (!test) return;
+
+        if (chart) {
+            chart.destroy();
+        }
+
+        const sortedResults = test.result
+            .map(entry => ({
+                date: new Date(Object.keys(entry)[0]),
+                value: parseFloat(Object.values(entry)[0])
+            }))
+            .filter(entry => (!startDate || entry.date >= startDate) && (!endDate || entry.date <= endDate))
+            .sort((a, b) => a.date - b.date);
+
+        const labels = sortedResults.map(entry => entry.date);
+        const dataValues = sortedResults.map(entry => entry.value);
+
+        const refMin = parseFloat(test.ref_range.split('-')[0]);
+        const refMax = parseFloat(test.ref_range.split('-')[1]);
+        const chartMaxValue = Math.max(...dataValues, refMax) + 10;
+
+        chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Results',
+                        data: dataValues,
+                        borderColor: 'rgba(0, 39, 77, 1)',
+                        backgroundColor: 'rgba(0, 39, 77, 0.2)',
+                        fill: false,
+                        pointBackgroundColor: dataValues.map(value =>
+                            value < refMin
+                                ? 'rgba(0, 0, 255, 1)'
+                                : value > refMax
+                                    ? 'rgba(255, 0, 0, 1)'
+                                    : '#009688'
+                        ),
+                        pointBorderColor: dataValues.map(value =>
+                            value < refMin
+                                ? 'rgba(0, 0, 255, 1)'
+                                : value > refMax
+                                    ? 'rgba(255, 0, 0, 1)'
+                                    : '#009688'
+                        ),
+                        pointRadius: 5
                     },
-                    above: 'rgba(0, 255, 0, 0.4)',
-                    below: 'rgba(255, 255, 255, 0)'
-                },
-                type: 'line',
-                pointRadius: 0
-            },
-            {
-                label: 'Below Reference Range',
-                data: labels.map(() => refMin),
-                borderColor: 'rgba(43, 47, 240, 0)',
-                backgroundColor: 'rgba(0, 0, 255, 0.5)',
-                fill: {
-                    target: 'origin',
-                    above: 'rgba(43, 47, 240, 0.5)',
-                    below: 'rgba(43, 47, 240, 0)'
-                },
-                type: 'line',
-                pointRadius: 0
-            },
-            {
-                label: 'Above Reference Range',
-                data: labels.map(() => chartMaxValue),
-                borderColor: 'rgba(255, 0, 0, 0)',
-                backgroundColor: 'rgba(255, 0, 0, 0.4)',
-                fill: {
-                    target: {
-                        value: refMax
+                    {
+                        label: 'Reference Range',
+                        data: labels.map(() => refMax),
+                        borderColor: 'rgba(0, 255, 0, 0)',
+                        backgroundColor: 'rgba(0, 255, 0, 0.4)',
+                        fill: {
+                            target: {
+                                value: refMin
+                            },
+                            above: 'rgba(0, 255, 0, 0.4)',
+                            below: 'rgba(255, 255, 255, 0)'
+                        },
+                        type: 'line',
+                        pointRadius: 0
                     },
-                    above: 'rgba(255, 0, 0, 0.4)',
-                    below: 'rgba(255, 255, 255, 0)'
-                },
-                type: 'line',
-                pointRadius: 0
-            }
-        ]
-    },
-    options: {
-        scales: {
-            x: {
-                type: 'time',
-                time: {
-                    unit: 'day',
-                    displayFormats: {
-                        day: 'dd/MM/yyyy'
+                    {
+                        label: 'Below Reference Range',
+                        data: labels.map(() => refMin),
+                        borderColor: 'rgba(43, 47, 240, 0)',
+                        backgroundColor: 'rgba(0, 0, 255, 0.5)',
+                        fill: {
+                            target: 'origin',
+                            above: 'rgba(43, 47, 240, 0.5)',
+                            below: 'rgba(43, 47, 240, 0)'
+                        },
+                        type: 'line',
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'Above Reference Range',
+                        data: labels.map(() => chartMaxValue),
+                        borderColor: 'rgba(255, 0, 0, 0)',
+                        backgroundColor: 'rgba(255, 0, 0, 0.4)',
+                        fill: {
+                            target: {
+                                value: refMax
+                            },
+                            above: 'rgba(255, 0, 0, 0.4)',
+                            below: 'rgba(255, 255, 255, 0)'
+                        },
+                        type: 'line',
+                        pointRadius: 0
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: {
+                            unit: 'day',
+                            displayFormats: {
+                                day: 'dd/MM/yyyy'
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        suggestedMax: chartMaxValue,
+                        title: {
+                            display: true,
+                            text: `Results (${test.unit})`
+                        }
                     }
                 },
-                title: {
-                    display: true,
-                    text: 'Date'
-                }
-            },
-            y: {
-                beginAtZero: true,
-                suggestedMax: chartMaxValue,
-                title: {
-                    display: true,
-                    text: `Results (${test.unit})`
-                }
-            }
-        },
-        plugins: {
-            tooltip: {
-                callbacks: {
-                    label: function (context) {
-                        const value = context.raw;
-                        const label = context.dataset.label || '';
-                        if (label === 'Results') {
-                            if (value < refMin) {
-                                return `${label}: ${value} (Below Reference Range)`;
-                            } else if (value > refMax) {
-                                return `${label}: ${value} (Above Reference Range)`;
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                const value = context.raw;
+                                const label = context.dataset.label || '';
+                                if (label === 'Results') {
+                                    if (value < refMin) {
+                                        return `${label}: ${value} (Below Reference Range)`;
+                                    } else if (value > refMax) {
+                                        return `${label}: ${value} (Above Reference Range)`;
+                                    }
+                                }
+                                return `${label}: ${value}`;
                             }
                         }
-                        return `${label}: ${value}`;
                     }
                 }
             }
-        }
-    }
-});
-            }
-        
-            // Initial content update
-            updateContent();
         });
-        </script>
-        
-</body>
-</html>
+    }
+
+    // Initial content update
+    updateContent();
+});
+
+
+    </script>
+{% endblock %}

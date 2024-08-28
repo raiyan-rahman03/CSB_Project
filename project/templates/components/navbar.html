@@ -1,0 +1,39 @@
+{% load static %}
+<nav>
+    <div class="flex-row space_around container-nav">
+        <div class="flex-row space_between logo-icon-wrapper">
+            <div class="logo">
+                <a href="http://127.0.0.1:8000/index"><img src="{% static 'images/logo.png' %}" alt="Logo"></a>
+                <!-- <h2 class="top-fonts">M<span>ed</span>V<span>isual</span></h2> -->
+            </div>
+            <div class="icon-show-off" id="showContentButton">
+                <span>+</span>
+            </div>
+        </div>
+        <div class="nav-item">
+            <ul class="flex-row space_around">
+                <li><a href="http://127.0.0.1:8000/index">Home</a></li>
+                <li><a href="http://127.0.0.1:8000/chart">Report</a></li>
+                <li><a href="http://127.0.0.1:8000/appoint_temp">My Appointments </a></li>
+                <li><a href="http://127.0.0.1:8000/index#contact-us">Contact Us</a></li>
+
+            </ul>
+        </div>
+        <div class="user">
+            <ul class="flex-row space_around">
+                {% if user.is_authenticated %}
+                  <div class="user-image">
+                    <a href="http://127.0.0.1:8000/profile/">
+                        <img src="{% static 'images/profile-image.jpg' %}" alt="">
+                    </a>
+                  </div>
+                    <li><a href="http://127.0.0.1:8000/accounts/logout/">Logout</a></li>
+                {% else %}
+                    <li><a href="http://127.0.0.1:8000/accounts/login/">Login</a></li>
+                    <li><a href="http://127.0.0.1:8000/accounts/signup/">SignUp</a></li>
+                {% endif %}
+            </ul>
+        </div>
+        
+    </div>
+</nav>

@@ -1,54 +1,18 @@
+{% extends 'components/base.html' %}
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MedVisual</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}">
-    <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
-</head>
-<body>
-    <header>
-        <!-- Navbar -->
-        <nav>
-            <div class="flex-row space_around container-nav">
-                <div class="flex-row space_between logo-icon-wrapper">
-                    <div class="logo">
-                        <img src="{% static 'images/logo.png' %}" alt="Logo">
-                        <!-- <h2 class="top-fonts">M<span>ed</span>V<span>isual</span></h2> -->
-                    </div>
-                    <div class="icon-show-off" id="showContentButton">
-                        <span>+</span>
-                    </div>
-                </div>
-                <div class="nav-item">
-                    <ul class="flex-row space_around">
-                        <li><a href="http://127.0.0.1:8000/index">Home</a></li>
-                        <li><a href="http://127.0.0.1:8000/chart">Report</a></li>
-                        <li><a href="http://127.0.0.1:8000/appoint_temp">My Appointments </a></li>
-                        <li><a href="#contact-us">Contact Us</a></li>
+{% block title %}MedVisual{% endblock %}
 
-                    </ul>
-                </div>
-                <div class="user">
-                    <ul class="flex-row space_around">
-                        {% if user.is_authenticated %}
-                            <li><a href="http://127.0.0.1:8000/accounts/logout/">Logout</a></li>
-                        {% else %}
-                            <li><a href="http://127.0.0.1:8000/accounts/login/">Login</a></li>
-                            <li><a href="http://127.0.0.1:8000/accounts/signup/">SignUp</a></li>
-                        {% endif %}
-                    </ul>
-                </div>
-                
-            </div>
-        </nav>
 
-        <div class="header flex-row container">
+{% block add_top %}
+<link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}">
+{% endblock %}
+
+
+{% block content %}
+<header>
+        <div class="header flex-row container bottom-nav">
             <div class="content-side two-side-div">
                 <h1 class="top-fonts">
                     Med Visual
@@ -234,41 +198,11 @@
             <img src="{% static 'images/contact-us.png' %}" alt="Contact Us">
         </div>
     </section>
+    {% endblock %}
 
-    <footer>
-        <div class="footer">
-            <h2 class="top-fonts">MedVisual</h2>
-            <div class="about-us-footer">
-                <ul class="flex-row space_around">
-                    <li class="flex-column">
-                        <p>Shahidullah</p>
-                        <a href="https://www.linkedin.com/in/black2o-sh/"><i class="fa-brands fa-linkedin"></i></a>
-                    </li>
-                    <li class="flex-column">
-                        <p>Raiyan</p>
-                        <a href="https://www.linkedin.com/in/md-raiyan-rahman-6420982b9/"><i class="fa-brands fa-linkedin"></i></a>
-                    </li>
-                    <li class="flex-column">
-                        <p>Miraj</p>
-                        <a href="#"><i class="fa-brands fa-linkedin"></i></a>
-                    </li>
-                    <li class="flex-column">
-                        
-                       
-                    </li>
-
-                </ul>
-            </div>
-            <div class="footer_copy">
-                <span>© Shahidullah || Raiyan || Miraj. All rights reserved</span>
-            </div>
-        </div>
-    </footer>
-
-
+    {% block bottom %}
     <script src="{% static 'javascript/jquery.min.js' %}"></script>
     <script src="{% static 'javascript/owl.carousel.min.js' %}"></script>
     <script src="https://kit.fontawesome.com/2f363fc945.js" crossorigin="anonymous"></script>
     <script src="{% static 'javascript/script.js' %}"></script>
-</body>
-</html>
+    {% endblock %}

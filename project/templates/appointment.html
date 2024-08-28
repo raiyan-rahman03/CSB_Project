@@ -1,63 +1,90 @@
+{% extends 'components/base.html' %}
 {% load static %}
 
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Appointments</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <script>
-        // Fetch the appointments when the page loads
-        document.addEventListener("DOMContentLoaded", function() {
-            fetchAppointments();
-        });
+{% block title %}Appointments || MedVisual{% endblock %}
 
-        // Function to fetch and display appointments
-        function fetchAppointments() {
-            fetch('http://127.0.0.1:8000/appointments')
-                .then(response => response.json())
-                .then(data => {
-                    const appointmentsTable = document.getElementById('appointments-table');
-                    appointmentsTable.innerHTML = '';  // Clear previous data
 
-                    data.forEach(appointment => {
-                        const row = document.createElement('tr');
+{% block content %}
 
-                        row.innerHTML = `
-                            <td>${appointment.id}</td>
-                            <td>${appointment.doctor}</td>
-                            <td>${appointment.patient}</td>
-                            <td>${appointment.appointment_date}</td>
-                            <td>${appointment.apointment_time}</td>
-                            <td>${appointment.status}</td>
-                            <td>${appointment.zoom_meeting_id || 'N/A'}</td>
-                            <td>${appointment.zoom_join_link ? `<a href="${appointment.zoom_join_link}" target="_blank">Join Meeting</a>` : 'N/A'}</td>
-                            <td>
-                                ${appointment.status === 'pending' ? `<button onclick="acceptAppointment(${appointment.id})">Accept</button>` : 'Confirmed'}
-                            </td>
-                            <td>
-                                <a href="http://127.0.0.1:8000/doct/${appointment.patient_id}" class="btn">Pateint Reports</a>
-                            </td>
-                        `;
+<div class="appoinment-wrapper flex-column bottom-nav">
+    <h1 class="top-fonts">Appointments</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Doctor</th>
+                <th>Patient</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Status</th>
+                <th>Zoom Meeting ID</th>
+                <th>Zoom Join Link</th>
+                <th>Actions</th>
+                <th>Patient Details</th>
+            </tr>
+        </thead>
+        <tbody id="appointments-table">
+            <!-- Appointments will be dynamically loaded here -->
+        </tbody>
+    </table>
+</div>
 
-                        appointmentsTable.appendChild(row);
-                    });
-                })
-                .catch(error => {
-                    console.error('Error fetching appointments:', error);
+{% endblock %}
+
+
+{% block bottom %}
+<script>
+    // Fetch the appointments when the page loads
+    document.addEventListener("DOMContentLoaded", function () {
+        fetchAppointments();
+    });
+
+    // Function to fetch and display appointments
+    function fetchAppointments() {
+        fetch('http://127.0.0.1:8000/appointments')
+            .then(response => response.json())
+            .then(data => {
+                const appointmentsTable = document.getElementById('appointments-table');
+                appointmentsTable.innerHTML = '';  // Clear previous data
+
+                data.forEach(appointment => {
+                    const row = document.createElement('tr');
+
+                    row.innerHTML = `
+                        <td>${appointment.id}</td>
+                        <td>${appointment.doctor}</td>
+                        <td>${appointment.patient}</td>
+                        <td>${appointment.appointment_date}</td>
+                        <td>${appointment.apointment_time}</td>
+                        <td>${appointment.status}</td>
+                        <td>${appointment.zoom_meeting_id || 'N/A'}</td>
+                        <td>${appointment.zoom_join_link ? `<a href="${appointment.zoom_join_link}" target="_blank">Join Meeting</a>` : 'N/A'}</td>
+                        <td>
+                            ${appointment.status === 'pending' ? `<button onclick="acceptAppointment(${appointment.id})">Accept</button>` : 'Confirmed'}
+                        </td>
+                        <td>
+                            <a href="http://127.0.0.1:8000/doct/${appointment.patient_id}" class="btn">Pateint Reports</a>
+                        </td>
+                    `;
+
+                    appointmentsTable.appendChild(row);
                 });
-        }
-
-        // Function to accept an appointment
-        function acceptAppointment(appointmentId) {
-            fetch(`http://127.0.0.1:8000/accept-appointment/${appointmentId}/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')  // Assuming Django's CSRF token
-                },
-                body: JSON.stringify({ status: 'confirmed' })
             })
+            .catch(error => {
+                console.error('Error fetching appointments:', error);
+            });
+    }
+
+    // Function to accept an appointment
+    function acceptAppointment(appointmentId) {
+        fetch(`http://127.0.0.1:8000/accept-appointment/${appointmentId}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')  // Assuming Django's CSRF token
+            },
+            body: JSON.stringify({ status: 'confirmed' })
+        })
             .then(response => response.ok ? response.json() : Promise.reject('Failed to accept appointment.'))
             .then(() => {
                 alert('Appointment successfully accepted and meeting created.');
@@ -67,83 +94,22 @@
                 console.error('Error accepting appointment:', error);
                 alert('Failed to accept appointment.');
             });
-        }
+    }
 
-        // Function to get CSRF token from cookies
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
+    // Function to get CSRF token from cookies
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
                 }
             }
-            return cookieValue;
         }
-    </script>
-</head>
-<body>
-
-    <header>
-        <!-- Navbar -->
-        <nav>
-            <div class="flex-row space_around">
-                <div class="flex-row space_between logo-icon-wrapper">
-                    <div class="logo">
-                        <img src="{% static 'images/logo.png' %}" alt="Logo">
-                    </div>
-                    <div class="icon-show-off" id="showContentButton">
-                        <span>+</span>
-                    </div>
-                </div>
-                <div class="nav-item">
-                    <ul class="flex-row space_around">
-                        <li><a href="http://127.0.0.1:8000/index">Home</a></li>
-                        <li><a href="http://127.0.0.1:8000/chart">Report</a></li>
-                        <li><a href="chat_with_doctor.html">Talk With Doctor</a></li>
-                        <li><a href="#contact-us">Contact Us</a></li>
-                    </ul>
-                </div>
-                <div class="user">
-                    <ul class="flex-row space_around">
-                        {% if user.is_authenticated %}
-                            <li><a href="http://127.0.0.1:8000/accounts/logout/">Logout</a></li>
-                        {% else %}
-                            <li><a href="http://127.0.0.1:8000/accounts/login/">Login</a></li>
-                            <li><a href="http://127.0.0.1:8000/accounts/signup/">SignUp</a></li>
-                        {% endif %}
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-
-    <div class="appoinment-wrapper flex-column">
-        <h1 class="top-fonts">Appointments</h1>
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Doctor</th>
-                    <th>Patient</th>
-                    <th>Date</th>
-                    <th>Time</th>
-                    <th>Status</th>
-                    <th>Zoom Meeting ID</th>
-                    <th>Zoom Join Link</th>
-                    <th>Actions</th>
-                    <th>Patient Details</th>
-                </tr>
-            </thead>
-            <tbody id="appointments-table">
-                <!-- Appointments will be dynamically loaded here -->
-            </tbody>
-        </table>
-    </div>
-
-</body>
-</html>
+        return cookieValue;
+    }
+</script>
+{% endblock %}

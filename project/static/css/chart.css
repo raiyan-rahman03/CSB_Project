@@ -1,14 +1,6 @@
 @import url('global.css');
-:root {
-    --main-bg: #f5f5f5; 
-    --second-bg: #ffffff; 
-    --main-color: #00274d; 
-    --secondary-color: #009688; 
-    --extra-color: #6c757d; 
-}
 body {
     padding: 0;
-    display: flex;
     justify-content: center;
     align-items: flex-start;
     min-height: 100vh;

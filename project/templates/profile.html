@@ -1,141 +1,79 @@
+{% extends 'components/base.html' %}
 {% load static %}
-<html lang="en">
 
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MedVisual</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}">
-  </head>
-  <body>
-    <header>
-      <!-- Navbar -->
-      <nav>
-        <div class="container flex-row space_between">
-          <div class="flex-row space_between logo-icon-wrapper">
-            <div class="logo">
-              <img src="{% static 'images/logo.png' %}" alt="">
-            </div>
-            <div class="icon-show-off" id="showContentButton">
-              <span>+</span>
-            </div>
-          </div>
-          <div class="nav-item">
-            <ul class="flex-row space_around">
-              <li><a href="">Home</a></li>
-              <li><a href="">Report</a></li>
-              <li><a href="">Talk With Doctor</a></li>
-              <li><a href="">Contact Us</a></li>
-            </ul>
-          </div>
-          <div class="user">
-            <ul class="flex-row space_around">
-              <div class="user-image">
-               <img src="{% static 'images/profile-image.jpg' %}" alt="">
-              </div>
-            </ul>
-          </div>
-        </div>
-      </nav>
+{% block title %}Profile{% endblock %}
 
-      <div class="profile flex-row container">
-        <div class="image-side two-side-div">
-         <img src="{% static 'images/profile-image.jpg' %}" alt="">
-          <!-- <button>Upload Image</button> -->
+
+{% block content %}
+<header>
+  <div class="profile flex-row container">
+    <div class="image-side two-side-div">
+     <img src="{% static 'images/profile-image.jpg' %}" alt="">
+      <!-- <button>Upload Image</button> -->
+    </div>
+    <div class="profile-data two-side-div">
+      <div class="profile-data-all">
+        <div class="profile-data-single flex-row">
+          <p class="profile-whatisname">Name:</p>
+          <p>Dr. Emily Johnson</p>
         </div>
-        <div class="profile-data two-side-div">
-          <div class="profile-data-all">
-            <div class="profile-data-single flex-row">
-              <p class="profile-whatisname">Name:</p>
-              <p>Dr. Emily Johnson</p>
-            </div>
-            <div class="profile-data-single flex-row">
-              <p class="profile-whatisname">DOB:</p>
-              <p>22-10-1995</p>
-            </div>
-            <div class="profile-data-single flex-row">
-              <p class="profile-whatisname">Occupation:</p>
-              <p>Pediatrician</p>
-            </div>
-          </div>
-          <p>
-            Hi, I am Dr. Emily Johnson, a board-certified pediatrician with over 15 years of experience in providing compassionate and comprehensive healthcare to children and adolescents. My approach focuses on preventive care, early detection of illnesses, and personalized treatment plans to ensure the well-being and healthy development of my patients. I am passionate about educating parents and caregivers on child health, nutrition, and safety.
-          </p>
-          <div class="ul-li-in-profile">
-            <p>Specialties</p>
-            <ul>
-              <li>General Pediatrics</li>
-              <li>Adolescent Medicine</li>
-              <li>Pediatric Infectious Diseases</li>
-              <li>Child Development and Behavior</li>
-            </ul>
-          </div>
-          <div class="ul-li-in-profile">
-            <p>Education:</p>
-            <ul>
-              <li>M.D., Harvard Medical School</li>
-              <li>Residency in Pediatrics, Boston Children's Hospital</li>
-            </ul>
-          </div>
-          <div class="ul-li-in-profile">
-            <p>Office Hours:</p>
-            <ul>
-              <li>Monday - Friday: 9 AM - 5 PM</li>
-              <li>Saturday: 10 AM - 2 PM</li>
-              <li>Sunday: Closed</li>
-            </ul>
-          </div>
-          <p>Welcome to my practice! I am dedicated to providing the highest quality care for your child's health. Whether it's a routine check-up or a complex medical condition, my team and I are here to support you every step of the way. Thank you for trusting us with your child's healthcare needs.</p>
-          
-          
-          <button class="btn">
-            <a href="">Report</a>
-          </button>
-          <button class="btn">
-            <a href="">Talk With Doctor</a>
-          </button>
+        <div class="profile-data-single flex-row">
+          <p class="profile-whatisname">DOB:</p>
+          <p>22-10-1995</p>
+        </div>
+        <div class="profile-data-single flex-row">
+          <p class="profile-whatisname">Occupation:</p>
+          <p>Pediatrician</p>
         </div>
       </div>
-    </header>
-    <footer>
-        <div class="footer">
-          <h2>MedVisual</h2>
-          <div class="about-us-footer">
-            <ul class="flex-row space_around">
-              <li class="flex-column">
-                <p>Shahidullah</p>
-                <a href=""><i class="fa-brands fa-instagram"></i></a>
-              </li>
-              <li class="flex-column">
-                <p>Raiyan</p>
-                <a href=""><i class="fa-brands fa-instagram"></i></a>
-              </li>
-              <li class="flex-column">
-                <p>Miraj</p>
-                <a href=""><i class="fa-brands fa-instagram"></i></a>
-              </li>
-              <li class="flex-column">
-                <p>Raiyan</p>
-                <a href=""><i class="fa-brands fa-instagram"></i></a>
-              </li>
-            </ul>
-          </div>
-          <div class="footer_copy">
-            <span
-              >© Shahidullah || Raiyan || Miraj || Raiyan. All rigths
-              reserved</span
-            >
-          </div>
-        </div>
-      </footer>
+      <p>
+        Hi, I am Dr. Emily Johnson, a board-certified pediatrician with over 15 years of experience in providing compassionate and comprehensive healthcare to children and adolescents. My approach focuses on preventive care, early detection of illnesses, and personalized treatment plans to ensure the well-being and healthy development of my patients. I am passionate about educating parents and caregivers on child health, nutrition, and safety.
+      </p>
+      <div class="ul-li-in-profile">
+        <p>Specialties</p>
+        <ul>
+          <li>General Pediatrics</li>
+          <li>Adolescent Medicine</li>
+          <li>Pediatric Infectious Diseases</li>
+          <li>Child Development and Behavior</li>
+        </ul>
+      </div>
+      <div class="ul-li-in-profile">
+        <p>Education:</p>
+        <ul>
+          <li>M.D., Harvard Medical School</li>
+          <li>Residency in Pediatrics, Boston Children's Hospital</li>
+        </ul>
+      </div>
+      <div class="ul-li-in-profile">
+        <p>Office Hours:</p>
+        <ul>
+          <li>Monday - Friday: 9 AM - 5 PM</li>
+          <li>Saturday: 10 AM - 2 PM</li>
+          <li>Sunday: Closed</li>
+        </ul>
+      </div>
+      <p>Welcome to my practice! I am dedicated to providing the highest quality care for your child's health. Whether it's a routine check-up or a complex medical condition, my team and I are here to support you every step of the way. Thank you for trusting us with your child's healthcare needs.</p>
+      
+      
+      <button class="btn">
+        <a href="">Report</a>
+      </button>
+      <button class="btn">
+        <a href="">Talk With Doctor</a>
+      </button>
+    </div>
+  </div>
+</header>
+{% endblock %}
+
+
+
+
+
   
-  
+{% block bottom %}
       <script src="https://kit.fontawesome.com/2f363fc945.js" crossorigin="anonymous"></script>
-      <script src="{% static 'javascript/jquery.min.js' %}"></script>
-      <script src="{% static 'javascript/owl.carousel.min.js' %}"></script>
       <script src="{% static 'javascript/script.js' %}"></script>
-    </body>
-  </html>
+{% endblock %}
   
