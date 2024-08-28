@@ -35,6 +35,9 @@
                             <td>
                                 ${appointment.status === 'pending' ? `<button onclick="acceptAppointment(${appointment.id})">Accept</button>` : 'Confirmed'}
                             </td>
+                            <td>
+                                <a href="http://127.0.0.1:8000/doct/${appointment.patient_id}" class="btn">Pateint Reports</a>
+                            </td>
                         `;
 
                         appointmentsTable.appendChild(row);
@@ -92,7 +95,6 @@
                 <div class="flex-row space_between logo-icon-wrapper">
                     <div class="logo">
                         <img src="{% static 'images/logo.png' %}" alt="Logo">
-                        <!-- <h2 class="top-fonts">M<span>ed</span>V<span>isual</span></h2> -->
                     </div>
                     <div class="icon-show-off" id="showContentButton">
                         <span>+</span>
@@ -134,6 +136,7 @@
                     <th>Zoom Meeting ID</th>
                     <th>Zoom Join Link</th>
                     <th>Actions</th>
+                    <th>Patient Details</th>
                 </tr>
             </thead>
             <tbody id="appointments-table">

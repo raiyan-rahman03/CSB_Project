@@ -1,62 +1,174 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Test Results Chart</title>
-    <link rel="stylesheet" href="{% static 'css/chart.css' %}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            background-color: #b3c8ff;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            background: #f8faff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 100%;
+            max-width: 1200px;
+            box-sizing: border-box;
+            margin: 20px;
+        }
+        .report-section {
+            flex: 1;
+            max-width: 30%;
+            margin-right: 20px;
+        }
+        .header-container {
+            text-align: center;
+            margin-bottom: 20px;
+            flex-basis: 100%;
+        }
+        h1 {
+            margin: 0;
+            font-size: 24px;
+            color: #333;
+        }
+        p {
+            margin: 5px 0;
+            font-size: 16px;
+            color: #555;
+        }
+        select, canvas, input, .view-toggle, table {
+            width: 100%;
+            max-width: 100%;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+        select, input, .view-toggle {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        canvas {
+            max-width: 100%;
+            height: 40vh;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            word-wrap: break-word;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        td img {
+            max-width: 100%;
+            max-height: 200px; /* Limiting image height */
+            object-fit: cover; /* Maintain aspect ratio */
+        }
+        .view-toggle {
+            display: flex;
+            justify-content: space-around;
+        }
+        .view-toggle button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 4px;
+            flex: 1;
+            margin: 0 5px;
+        }
+        .view-toggle button.active {
+            background-color: #004793;
+        }
+        @media (max-width: 768px) {
+            .view-toggle {
+                flex-direction: column;
+            }
+            .view-toggle button {
+                margin: 5px 0;
+                width: 100%;
+            }
+        }
+        .main-section {
+            flex: 2;
+            min-width: 70%;
+        }
+        /* Modal styling */
+        #imageModal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        #modalImage {
+            width: auto;
+            height: auto;
+            max-width: 100%;
+            max-height: 100%;
+            display: block;
+            margin: auto;
+        }
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover,
+        .close:focus {
+            color: #bbb;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
     </head>
     <body>
-        <nav>
-            <div class="flex-row space_around">
-                <div class="flex-row space_between logo-icon-wrapper">
-                    <div class="logo">
-                        <img src="{% static 'images/logo.png' %}" alt="Logo">
-                        <!-- <h2 class="top-fonts">M<span>ed</span>V<span>isual</span></h2> -->
-                    </div>
-                    <div class="icon-show-off" id="showContentButton">
-                        <span>+</span>
-                    </div>
-                </div>
-                <div class="nav-item">
-                    <ul class="flex-row space_around">
-                        <li><a href="http://127.0.0.1:8000/index">Home</a></li>
-                        <li><a href="http://127.0.0.1:8000/chart">Report</a></li>
-                        <li><a href="chat_with_doctor.html">Talk With Doctor</a></li>
-                        <li><a href="#contact-us">Contact Us</a></li>
-
-                    </ul>
-                </div>
-                <div class="user">
-                    <ul class="flex-row space_around">
-                        {% if user.is_authenticated %}
-                            <li><a href="http://127.0.0.1:8000/accounts/logout/">Logout</a></li>
-                        {% else %}
-                            <li><a href="http://127.0.0.1:8000/accounts/login/">Login</a></li>
-                            <li><a href="http://127.0.0.1:8000/accounts/signup/">SignUp</a></li>
-                        {% endif %}
-                    </ul>
-                </div>
-                
-            </div>
-        </nav>
     <div class="container">
         <div class="report-section">
-            <label class="top-fonts" for="testNamesDropdown">Select a Report to see:</label>
-            <div class="custom-select">
-                <select id="testNamesDropdown">
-                    <option value="" selected disabled>Select a test name</option>
-                </select>
-            </div>  
-            <div class="lab-report-data">
-                <h1 class="top-fonts">Lab Report Data</h1>
+            <label for="testNamesDropdown">Select a Report to see:</label>
+            <select id="testNamesDropdown">
+                <option value="" selected disabled>Select a test name</option>
+            </select>
+            <div>
+                <h1>Lab Report Data</h1>
                 <table id="reportTable">
                     <thead>
                         <tr>
-                            <th>Report</th>
+                            <th>Report Name</th>
                             <th>Date</th>
                             <th>Sample</th>
                             <th>Image</th>
@@ -70,7 +182,7 @@
         </div>
         <div class="main-section">
             <div class="header-container">
-                <h1 class="top-fonts">Test Results Overview of {{request.user.username}}</h1>
+                <h1>Test Results Overview of {{request.user.username}}</h1>
                 <p>Age: <span id="user-age">--</span></p>
                 <p>Gender: <span id="user-gender">--</span></p>
             </div>
@@ -126,7 +238,7 @@
             let tests = [];
 
             // Fetch and populate the test names dropdown
-            fetch('http://127.0.0.1:8000/test_names')
+            fetch('http://127.0.0.1:8000/doc/test_names/{{ userid }}/')
                 .then(response => response.json())
                 .then(data => {
                     data.filter(name => name !== null).forEach(name => {
@@ -142,7 +254,7 @@
             function updateContent() {
                 const selectedTestName = testNamesDropdown.value;
                 if (selectedTestName) {
-                    const apiUrl = `http://127.0.0.1:8000/image/{{request.user.id}}/${encodeURIComponent(selectedTestName)}`;
+                    const apiUrl = `http://127.0.0.1:8000/image/{{userid}}/${encodeURIComponent(selectedTestName)}`;
 
                     fetch(apiUrl)
                         .then(response => {
@@ -163,7 +275,7 @@
                     reportTableBody.innerHTML = '';
                 }
 
-                const chApiUrl = `http://127.0.0.1:8000/ch/{{request.user.id}}/${encodeURIComponent(selectedTestName)}`;
+                const chApiUrl = `http://127.0.0.1:8000/ch/{{userid}}/${encodeURIComponent(selectedTestName)}`;
                 fetch(chApiUrl)
                     .then(response => response.json())
                     .then(data => {
@@ -338,121 +450,121 @@
                 const chartMaxValue = Math.max(...dataValues, refMax) + 10;
         
                 chart = new Chart(ctx, {
-    type: 'line',
-    data: {
-        labels: labels,
-        datasets: [
-            {
-                label: 'Results',
-                data: dataValues,
-                borderColor: 'rgba(0, 39, 77, 1)',
-                backgroundColor: 'rgba(0, 39, 77, 0.2)',
-                fill: false,
-                pointBackgroundColor: dataValues.map(value =>
-                    value < refMin
-                        ? 'rgba(0, 0, 255, 1)'
-                        : value > refMax
-                            ? 'rgba(255, 0, 0, 1)'
-                            : '#009688'
-                ),
-                pointBorderColor: dataValues.map(value =>
-                    value < refMin
-                        ? 'rgba(0, 0, 255, 1)'
-                        : value > refMax
-                            ? 'rgba(255, 0, 0, 1)'
-                            : '#009688'
-                ),
-                pointRadius: 5
-            },
-            {
-                label: 'Reference Range',
-                data: labels.map(() => refMax),
-                borderColor: 'rgba(0, 255, 0, 0)',
-                backgroundColor: 'rgba(0, 255, 0, 0.4)',
-                fill: {
-                    target: {
-                        value: refMin
-                    },
-                    above: 'rgba(0, 255, 0, 0.4)',
-                    below: 'rgba(255, 255, 255, 0)'
-                },
-                type: 'line',
-                pointRadius: 0
-            },
-            {
-                label: 'Below Reference Range',
-                data: labels.map(() => refMin),
-                borderColor: 'rgba(43, 47, 240, 0)',
-                backgroundColor: 'rgba(0, 0, 255, 0.5)',
-                fill: {
-                    target: 'origin',
-                    above: 'rgba(43, 47, 240, 0.5)',
-                    below: 'rgba(43, 47, 240, 0)'
-                },
-                type: 'line',
-                pointRadius: 0
-            },
-            {
-                label: 'Above Reference Range',
-                data: labels.map(() => chartMaxValue),
-                borderColor: 'rgba(255, 0, 0, 0)',
-                backgroundColor: 'rgba(255, 0, 0, 0.4)',
-                fill: {
-                    target: {
-                        value: refMax
-                    },
-                    above: 'rgba(255, 0, 0, 0.4)',
-                    below: 'rgba(255, 255, 255, 0)'
-                },
-                type: 'line',
-                pointRadius: 0
-            }
-        ]
-    },
-    options: {
-        scales: {
-            x: {
-                type: 'time',
-                time: {
-                    unit: 'day',
-                    displayFormats: {
-                        day: 'dd/MM/yyyy'
-                    }
-                },
-                title: {
-                    display: true,
-                    text: 'Date'
-                }
-            },
-            y: {
-                beginAtZero: true,
-                suggestedMax: chartMaxValue,
-                title: {
-                    display: true,
-                    text: `Results (${test.unit})`
-                }
-            }
-        },
-        plugins: {
-            tooltip: {
-                callbacks: {
-                    label: function (context) {
-                        const value = context.raw;
-                        const label = context.dataset.label || '';
-                        if (label === 'Results') {
-                            if (value < refMin) {
-                                return `${label}: ${value} (Below Reference Range)`;
-                            } else if (value > refMax) {
-                                return `${label}: ${value} (Above Reference Range)`;
+                            type: 'line',
+                            data: {
+                                labels: labels,
+                                datasets: [
+                                    {
+                                        label: 'Results',
+                                        data: dataValues,
+                                        borderColor: 'rgba(75, 192, 192, 1)',
+                                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                        fill: false,
+                                        pointBackgroundColor: dataValues.map(value =>
+                                            value < refMin
+                                                ? 'rgba(0, 0, 255, 1)'
+                                                : value > refMax
+                                                    ? 'rgba(255, 0, 0, 1)'
+                                                    : 'rgba(0, 255, 0, 1)'
+                                        ),
+                                        pointBorderColor: dataValues.map(value =>
+                                            value < refMin
+                                                ? 'rgba(0, 0, 255, 1)'
+                                                : value > refMax
+                                                    ? 'rgba(255, 0, 0, 1)'
+                                                    : 'rgba(0, 255, 0, 1)'
+                                        ),
+                                        pointRadius: 5
+                                    },
+                                    {
+                                        label: 'Reference Range',
+                                        data: labels.map(() => refMax),
+                                        borderColor: 'rgba(0, 255, 0, 0)',
+                                        backgroundColor: 'rgba(0, 255, 0, 0.3)',
+                                        fill: {
+                                            target: {
+                                                value: refMin
+                                            },
+                                            above: 'rgba(0, 255, 0, 0.3)',
+                                            below: 'rgba(255, 255, 255, 0)'
+                                        },
+                                        type: 'line',
+                                        pointRadius: 0
+                                    },
+                                    {
+                                        label: 'Below Reference Range',
+                                        data: labels.map(() => refMin),
+                                        borderColor: 'rgba(0, 0, 255, 0)',
+                                        backgroundColor: 'rgba(0, 0, 255, 0.3)',
+                                        fill: {
+                                            target: 'origin',
+                                            above: 'rgba(0, 0, 255, 0.3)',
+                                            below: 'rgba(255, 255, 255, 0)'
+                                        },
+                                        type: 'line',
+                                        pointRadius: 0
+                                    },
+                                    {
+                                        label: 'Above Reference Range',
+                                        data: labels.map(() => chartMaxValue),
+                                        borderColor: 'rgba(255, 0, 0, 0)',
+                                        backgroundColor: 'rgba(255, 0, 0, 0.3)',
+                                        fill: {
+                                            target: {
+                                                value: refMax
+                                            },
+                                            above: 'rgba(255, 0, 0, 0.3)',
+                                            below: 'rgba(255, 255, 255, 0)'
+                                        },
+                                        type: 'line',
+                                        pointRadius: 0
+                                    }
+                                ]
+                            },
+                            options: {
+                                scales: {
+                                    x: {
+                                        type: 'time',
+                                        time: {
+                                            unit: 'day',
+                                            displayFormats: {
+                                                day: 'dd/MM/yyyy'
+                                            }
+                                        },
+                                        title: {
+                                            display: true,
+                                            text: 'Date'
+                                        }
+                                    },
+                                    y: {
+                                        beginAtZero: true,
+                                        suggestedMax: chartMaxValue,
+                                        title: {
+                                            display: true,
+                                            text: `Results (${test.unit})`
+                                        }
+                                    }
+                                },
+                                plugins: {
+                                    tooltip: {
+                                        callbacks: {
+                                            label: function (context) {
+                                                const value = context.raw;
+                                                const label = context.dataset.label || '';
+                                                if (label === 'Results') {
+                                                    if (value < refMin) {
+                                                        return `${label}: ${value} (Below Reference Range)`;
+                                                    } else if (value > refMax) {
+                                                        return `${label}: ${value} (Above Reference Range)`;
+                                                    }
+                                                }
+                                                return `${label}: ${value}`;
+                                            }
+                                        }
+                                    }
+                                }
                             }
-                        }
-                        return `${label}: ${value}`;
-                    }
-                }
-            }
-        }
-    }
-});
+                        });
             }
         
             // Initial content update

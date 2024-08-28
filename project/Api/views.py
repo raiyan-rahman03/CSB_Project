@@ -1,11 +1,10 @@
+from django.shortcuts import get_object_or_404
+from .models import Profile
 import random
 from django.shortcuts import render, get_object_or_404
 from .models import Appointment
 from django.http import JsonResponse
-from .models import Appointment, ZoomToken  # Assuming these are your models
-from datetime import datetime
-from django.views import View
-from .models import ZoomToken  # Ensure you have the correct import path
+from .models import Appointment
 from .models import Appointment, Profile
 from django.utils import timezone
 from .models import LabReport
@@ -26,8 +25,6 @@ from .models import LabReport, LabReportImage
 import json
 
 
-def home(request):
-    return render(request, 'upload_image.html')
 
 
 # Step 1: AspireResponseView
@@ -275,7 +272,7 @@ class DatasetAPIView(APIView):
             return Response({"error": error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-def data_representation(request, test_name):
+def data_representation(request, id, test_name):
     user_id = request.user.id  # Get user id to fetch the data
     print(f"User ID: {user_id}")
     test_instance = Test.objects.get(user=user_id, name=test_name)
@@ -336,15 +333,14 @@ def report_names_get(request):
     return JsonResponse(list(names), safe=False)
 
 
-def report_images(request, name):
-    user_id = request.user.id
+def report_images(request, id, name):
 
     # Get the test ID based on the test name
     test = get_object_or_404(Test, name=name)
     test_id = test.id
 
     # Filter reports based on test ID and user ID
-    reports = LabReport.objects.filter(test_name=test_id, user_id=user_id)
+    reports = LabReport.objects.filter(test_name=test_id, user_id=id)
     report_data = []
 
     for report in reports:
@@ -366,7 +362,8 @@ def report_images(request, name):
     # Return the report data as a JSON response
     return JsonResponse({'report_data': report_data})
 
-# appointment logic
+
+# appointments logic
 
 
 def appointment(request):
@@ -381,8 +378,10 @@ def appointment(request):
     appointments_data = [
         {
             "id": appointment.id,
-            "doctor": appointment.doctor.id,
-            "patient": appointment.patient.id,
+            "doctor": appointment.doctor.username,
+            "doctor_id": appointment.doctor.id,
+            "patient": appointment.patient.username,
+            "patient_id": appointment.patient.id,
             "appointment_date": appointment.appointment_date,
             "apointment_time": appointment.apointment_time,
             "status": appointment.status,
@@ -393,9 +392,6 @@ def appointment(request):
     ]
 
     return JsonResponse(appointments_data, safe=False)
-
-
-# views.py
 
 
 def accept_appointment(request, id):
@@ -424,11 +420,12 @@ def accept_appointment(request, id):
     })
 
 
-def join_call(request):
-    return render(request, 'video_call.html', {"name": request.user})
+def impersonate_report_names_get(request, user_id):
+    target_user = get_object_or_404(User, id=user_id)
+    request.user = target_user
+    return report_names_get(request)
 
 
-# crud sytem building blocks
 
 class ProfileListCreateView(generics.ListCreateAPIView):
     queryset = Profile.objects.all()
@@ -466,10 +463,20 @@ def chat_with_doctor(request):
 def profile(request):
     return render(request, 'profile.html')
 
-
 def chart(request):
     return render(request, 'chart.html')
 
 
 def image(request):
     return render(request, 'image_view.html')
+
+
+def join_call(request):
+    return render(request, 'video_call.html', {"name": request.user})
+
+def doct(request, id):
+    return render(request, "doct_repo_view.html", {"userid": id})
+
+
+def home(request):
+    return render(request, 'upload_image.html')

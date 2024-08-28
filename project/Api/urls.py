@@ -9,7 +9,7 @@ urlpatterns = [
     path('accounts/profile/', RedirectView.as_view(url='http://127.0.0.1:8000/home', permanent=True)),
     path('', RedirectView.as_view(url='http://127.0.0.1:8000/home', permanent=True)),
     path('home',home),
-    path('chart',chart),
+    path('chart/',chart),
     path('index', index, name='index'),
     path('chat_with_doctor/', chat_with_doctor, name='chat_with_doctor'),
     path('profile/',profile, name='profile'),
@@ -29,16 +29,18 @@ urlpatterns = [
     path('accept-appointment/<int:id>/', accept_appointment, name='accept_appointment'),
     path('join-call/', join_call, name='join_call'),
     path('test_names',report_names_get),
-    path('ch/<str:test_name>',data_representation),
-    path('image/<str:name>',report_images),
+    path('ch/<int:id>/<str:test_name>',data_representation),
+    path('image/<int:id>/<str:name>',report_images),
     path('img',image),
   
 
+    path('doct/<int:id>',doct),
+    #impersonate 
+    path('doc/test_names/<int:user_id>/',impersonate_report_names_get)
+
      #zoom part
     
-
     
-
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

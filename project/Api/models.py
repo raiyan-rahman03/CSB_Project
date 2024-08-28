@@ -11,6 +11,10 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     role = models.CharField(max_length=10, choices=USER_ROLES)
     profile_picture = models.ImageField(null=True, blank=True)
+    birth=models.DateField(null=True)
+    specialization=models.CharField(null=True,max_length=50)
+    education=models.TextField(null=True)
+    
 
     def __str__(self):
         return f"{self.user.username} - {self.role}"
