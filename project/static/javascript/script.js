@@ -35,7 +35,8 @@ function toggleContent() {
 function setLayout() {
     const navItem = document.querySelector('.nav-item');
     const user = document.querySelector('.user');
-    const navContainer = document.querySelector('nav .container');
+    const navContainer = document.querySelector('nav .container-nav');
+    console.log(navContainer)
 
     if (window.innerWidth > 720) {
         navItem.style.display = 'block';
@@ -69,20 +70,6 @@ setLayout();
 $(document).ready(function(){
     $(".owl-carousel").owlCarousel();
   });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
