@@ -238,7 +238,7 @@
             let tests = [];
 
             // Fetch and populate the test names dropdown
-            fetch('http://127.0.0.1:8000/test_names')
+            fetch('http://127.0.0.1:8000/doc/test_names/{{ userid }}/')
                 .then(response => response.json())
                 .then(data => {
                     data.filter(name => name !== null).forEach(name => {
@@ -254,7 +254,7 @@
             function updateContent() {
                 const selectedTestName = testNamesDropdown.value;
                 if (selectedTestName) {
-                    const apiUrl = `http://127.0.0.1:8000/image/{{request.user.id}}/${encodeURIComponent(selectedTestName)}`;
+                    const apiUrl = `http://127.0.0.1:8000/image/{{userid}}/${encodeURIComponent(selectedTestName)}`;
 
                     fetch(apiUrl)
                         .then(response => {
@@ -275,7 +275,7 @@
                     reportTableBody.innerHTML = '';
                 }
 
-                const chApiUrl = `http://127.0.0.1:8000/ch/{{request.user.id}}/${encodeURIComponent(selectedTestName)}`;
+                const chApiUrl = `http://127.0.0.1:8000/ch/{{userid}}/${encodeURIComponent(selectedTestName)}`;
                 fetch(chApiUrl)
                     .then(response => response.json())
                     .then(data => {
