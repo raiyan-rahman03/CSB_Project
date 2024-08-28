@@ -77,8 +77,8 @@ class Appointment(models.Model):
     appointment_date = models.DateField(null=True)
     apointment_time = models.TimeField(null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES)
-    zoom_meeting_id = models.CharField(max_length=100, blank=True, null=True)
-    zoom_join_link = models.URLField(blank=True, null=True)
+    meeting_id = models.CharField(max_length=100, blank=True, null=True)
+    join_link = models.URLField(blank=True, null=True)
 
     def __str__(self):
         return f"Appointment on {self.appointment_date} with Dr. {self.doctor.username} id {self.id}"
@@ -91,8 +91,8 @@ class Appointment(models.Model):
 
 class ZoomToken(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    access_token = models.TextField(null=True,max_length=3000)
-    refresh_token = models.TextField(null=True, max_length=3000)
+    access_token = models.TextField(null=True)
+    refresh_token = models.TextField(null=True)
     expires_at = models.DateTimeField()
 
     def __str__(self):

@@ -1,6 +1,5 @@
 {% load static %}
 
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -40,12 +39,15 @@
 
                         appointmentsTable.appendChild(row);
                     });
+                })
+                .catch(error => {
+                    console.error('Error fetching appointments:', error);
                 });
         }
 
         // Function to accept an appointment
         function acceptAppointment(appointmentId) {
-            fetch(`http://127.0.0.1:8000/appointments/accept/${appointmentId}/`, {
+            fetch(`http://127.0.0.1:8000/accept-appointment/${appointmentId}/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -53,13 +55,14 @@
                 },
                 body: JSON.stringify({ status: 'confirmed' })
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    fetchAppointments();  // Refresh the appointments list
-                } else {
-                    alert('Failed to accept appointment.');
-                }
+            .then(response => response.ok ? response.json() : Promise.reject('Failed to accept appointment.'))
+            .then(() => {
+                alert('Appointment successfully accepted and meeting created.');
+                location.reload();  // Reload the page to reflect the changes
+            })
+            .catch(error => {
+                console.error('Error accepting appointment:', error);
+                alert('Failed to accept appointment.');
             });
         }
 
@@ -101,7 +104,6 @@
                         <li><a href="http://127.0.0.1:8000/chart">Report</a></li>
                         <li><a href="chat_with_doctor.html">Talk With Doctor</a></li>
                         <li><a href="#contact-us">Contact Us</a></li>
-
                     </ul>
                 </div>
                 <div class="user">
@@ -114,34 +116,31 @@
                         {% endif %}
                     </ul>
                 </div>
-                
             </div>
         </nav>
     </header>
 
     <div class="appoinment-wrapper flex-column">
-    <h1 class="top-fonts">Appointments</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Doctor</th>
-                <th>Patient</th>
-                <th>Date</th>
-                <th>Time</th>
-                <th>Status</th>
-                <th>Zoom Meeting ID</th>
-                <th>Zoom Join Link</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody id="appointments-table">
-            <!-- Appointments will be dynamically loaded here -->
-        </tbody>
-    </table>
-</div>
-
-    <script src="{% static 'javascript/script.js' %}"></script>
+        <h1 class="top-fonts">Appointments</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Doctor</th>
+                    <th>Patient</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                    <th>Zoom Meeting ID</th>
+                    <th>Zoom Join Link</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="appointments-table">
+                <!-- Appointments will be dynamically loaded here -->
+            </tbody>
+        </table>
+    </div>
 
 </body>
 </html>
