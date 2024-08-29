@@ -1,0 +1,111 @@
+[
+    {
+      "username": "oncologist001",
+      "password": "Onco@2024",
+      "specialization": "Oncologist",
+      "email": "oncologist001@example.com"
+    },
+    {
+      "username": "cardiologist002",
+      "password": "Cardio@2024",
+      "specialization": "Cardiologist",
+      "email": "cardiologist002@example.com"
+    },
+    {
+      "username": "neurologist003",
+      "password": "Neuro@2024",
+      "specialization": "Neurologist",
+      "email": "neurologist003@example.com"
+    },
+    {
+      "username": "nephrologist004",
+      "password": "Nephro@2024",
+      "specialization": "Nephrologist",
+      "email": "nephrologist004@example.com"
+    },
+    {
+      "username": "ophthalmologist005",
+      "password": "Ophtho@2024",
+      "specialization": "Ophthalmologist",
+      "email": "ophthalmologist005@example.com"
+    },
+    {
+      "username": "dentist006",
+      "password": "Dentist@2024",
+      "specialization": "Dentist",
+      "email": "dentist006@example.com"
+    },
+    {
+      "username": "dermatologist007",
+      "password": "Derm@2024",
+      "specialization": "Dermatologist",
+      "email": "dermatologist007@example.com"
+    },
+    {
+      "username": "orthopedic_surgeon008",
+      "password": "Ortho@2024",
+      "specialization": "Orthopedic Surgeon",
+      "email": "orthopedic_surgeon008@example.com"
+    },
+    {
+      "username": "pediatrician009",
+      "password": "Pedia@2024",
+      "specialization": "Pediatrician",
+      "email": "pediatrician009@example.com"
+    },
+    {
+      "username": "psychiatrist010",
+      "password": "Psych@2024",
+      "specialization": "Psychiatrist",
+      "email": "psychiatrist010@example.com"
+    },
+    {
+      "username": "endocrinologist011",
+      "password": "Endo@2024",
+      "specialization": "Endocrinologist",
+      "email": "endocrinologist011@example.com"
+    },
+    {
+      "username": "pulmonologist012",
+      "password": "Pulmo@2024",
+      "specialization": "Pulmonologist",
+      "email": "pulmonologist012@example.com"
+    },
+    {
+      "username": "ent013",
+      "password": "ENT@2024",
+      "specialization": "Otolaryngologist (ENT)",
+      "email": "ent013@example.com"
+    },
+    {
+      "username": "vascular_surgeon014",
+      "password": "Vasc@2024",
+      "specialization": "Vascular Surgeon",
+      "email": "vascular_surgeon014@example.com"
+    },
+    {
+      "username": "rheumatologist015",
+      "password": "Rheuma@2024",
+      "specialization": "Rheumatologist",
+      "email": "rheumatologist015@example.com"
+    },
+    {
+      "username": "gastroenterologist016",
+      "password": "Gastro@2024",
+      "specialization": "Gastroenterologist",
+      "email": "gastroenterologist016@example.com"
+    },
+    {
+      "username": "hematologist017",
+      "password": "Hemato@2024",
+      "specialization": "Hematologist",
+      "email": "hematologist017@example.com"
+    },
+    {
+      "username": "urologist018",
+      "password": "Uro@2024",
+      "specialization": "Urologist",
+      "email": "urologist018@example.com"
+    }
+  ]
+  

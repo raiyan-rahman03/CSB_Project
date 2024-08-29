@@ -6,11 +6,10 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('accounts/profile/', RedirectView.as_view(url='http://127.0.0.1:8000/', permanent=True)),
-    # path('', RedirectView.as_view(url='http://127.0.0.1:8000/home', permanent=True)),
-    path('upload',home),
-    path('chart/',chart),
     path('', index, name='index'),
+    path('accounts/profile/', RedirectView.as_view(url='http://127.0.0.1:8000/', permanent=True)),
+    path('upload',upload),
+    path('chart/',chart),
     path('chat_with_doctor/', chat_with_doctor, name='chat_with_doctor'),
     path('profile/',profile, name='profile'),
     path('ocr',AspireResponseView.as_view()),

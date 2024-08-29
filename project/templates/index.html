@@ -13,7 +13,7 @@
 {% block content %}
 <header>
         <div class="header flex-row container bottom-nav">
-            <div class="content-side two-side-div">
+            <div class="content-side two-side-div section-animate animate-left">
                 <h1 class="top-fonts">
                     Med Visual
                 </h1>
@@ -26,7 +26,7 @@
                     <a href="http://127.0.0.1:8000/upload">Start Now</a>
                 </button>
             </div>
-            <div class="image-side two-side-div">
+            <div class="image-side two-side-div section-animate animate-right">
                 <img src="{% static 'images/header.jpg' %}" alt="Home Header">
             </div>
         </div>
@@ -84,7 +84,6 @@
                 <p>
                     Effortlessly upload medical reports for automatic data extraction, advanced organization, and dynamic visualizations, enhancing clarity and accessibility of medical information.
                 </p>
-                <a href="#">Read More</a>
             </div>
             <div class="single-service">
                 <div class="single-service-img">
@@ -94,7 +93,6 @@
                 <p>
                     Get precise medical specialty recommendations based on AI analysis of your symptoms, ensuring efficient guidance to appropriate healthcare with professionals.
                 </p>
-                <a href="#">Read More</a>
             </div>
             <div class="single-service">
                 <div class="single-service-img">
@@ -104,7 +102,6 @@
                 <p>
                     Access visualized data during video consultations, benefit from secure storage and continuous health tracking, and connect globally with specialists for accessible and comprehensive care.
                 </p>
-                <a href="#">Read More</a>
             </div>
         </div>
     </section>
@@ -112,71 +109,15 @@
     <section id="doctor" class="container">
         <h1 class="top-write top-fonts">OUR DOCTORS</h1>
         <div class="doctor-wrapper space_around flex-row owl-carousel owl-theme" id="owl-demo">
-            <div class="single-doctor">
-                <div class="doctor-image">
-                    <img src="{% static 'images/team3.jpg' %}" alt="Doctor 1">
+            {% for doctor in doctors %}
+                <div class="single-doctor">
+                    <div class="doctor-image">
+                        <img src="{{doctor.profile_picture.url}}" alt="Doctor">
+                    </div>
+                    <p>{{doctor.user}}</p>
+                    <p>{{doctor.specialization}}</p>
                 </div>
-                <p>Morco</p>
-                <p>MBBS</p>
-                <ul class="doctor-link flex-row space_around">
-                    <li><i class="fa-brands fa-facebook"></i></li>
-                    <li><i class="fa-brands fa-x-twitter"></i></li>
-                    <li><i class="fa-brands fa-instagram"></i></li>
-                    <li><i class="fa-brands fa-youtube"></i></li>
-                </ul>
-            </div>
-            <div class="single-doctor">
-                <div class="doctor-image">
-                    <img src="{% static 'images/team3.jpg' %}" alt="Doctor 2">
-                </div>
-                <p>Morco</p>
-                <p>MBBS</p>
-                <ul class="doctor-link flex-row space_around">
-                    <li><i class="fa-brands fa-facebook"></i></li>
-                    <li><i class="fa-brands fa-x-twitter"></i></li>
-                    <li><i class="fa-brands fa-instagram"></i></li>
-                    <li><i class="fa-brands fa-youtube"></i></li>
-                </ul>
-            </div>
-            <div class="single-doctor">
-                <div class="doctor-image">
-                    <img src="{% static 'images/team3.jpg' %}" alt="Doctor 3">
-                </div>
-                <p>Morco</p>
-                <p>MBBS</p>
-                <ul class="doctor-link flex-row space_around">
-                    <li><i class="fa-brands fa-facebook"></i></li>
-                    <li><i class="fa-brands fa-x-twitter"></i></li>
-                    <li><i class="fa-brands fa-instagram"></i></li>
-                    <li><i class="fa-brands fa-youtube"></i></li>
-                </ul>
-            </div>
-            <div class="single-doctor">
-                <div class="doctor-image">
-                    <img src="{% static 'images/team3.jpg' %}" alt="Doctor 4">
-                </div>
-                <p>Morco</p>
-                <p>MBBS</p>
-                <ul class="doctor-link flex-row space_around">
-                    <li><i class="fa-brands fa-facebook"></i></li>
-                    <li><i class="fa-brands fa-x-twitter"></i></li>
-                    <li><i class="fa-brands fa-instagram"></i></li>
-                    <li><i class="fa-brands fa-youtube"></i></li>
-                </ul>
-            </div>
-            <div class="single-doctor">
-                <div class="doctor-image">
-                    <img src="{% static 'images/team3.jpg' %}" alt="Doctor 5">
-                </div>
-                <p>Morco</p>
-                <p>MBBS</p>
-                <ul class="doctor-link flex-row space_around">
-                    <li><i class="fa-brands fa-facebook"></i></li>
-                    <li><i class="fa-brands fa-x-twitter"></i></li>
-                    <li><i class="fa-brands fa-instagram"></i></li>
-                    <li><i class="fa-brands fa-youtube"></i></li>
-                </ul>
-            </div>
+            {% endfor %}
         </div>
     </section>
 
@@ -201,5 +142,6 @@
     <script src="{% static 'javascript/jquery.min.js' %}"></script>
     <script src="{% static 'javascript/owl.carousel.min.js' %}"></script>
     <script src="https://kit.fontawesome.com/2f363fc945.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha512-7eHRwcbYkK4d9g/6tD/mhkf++eoTHwpNM9woBxtPUBWm67zeAfFC+HrdoE2GanKeocly/VxeLvIqwvCdk7qScg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="{% static 'javascript/script.js' %}"></script>
     {% endblock %}

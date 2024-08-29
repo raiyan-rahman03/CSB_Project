@@ -453,7 +453,11 @@ def appointment_render(request):
 
 
 def index(request):
-    return render(request, 'index.html')
+    doctor = Profile.objects.filter(role__icontains="Doctor")
+    context = {
+        "doctors": doctor,
+    }
+    return render(request, 'index.html', context)
 
 
 def chat_with_doctor(request):
@@ -478,5 +482,5 @@ def doct(request, id):
     return render(request, "doct_repo_view.html", {"userid": id})
 
 
-def home(request):
+def upload(request):
     return render(request, 'upload_image.html')

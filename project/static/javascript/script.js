@@ -72,6 +72,20 @@ $(document).ready(function(){
 
 
 
+  var tl = gsap.timeline()
+
+  tl.from(".content-side", {
+      x: -1000,
+      duration: 1.5,
+      delay: 2,
+  })
+  
+  tl.from(".image-side", {
+    x: 1000,
+    duration: 1.5,
+    delay: 0,
+  })
+
 
 
 

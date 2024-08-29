@@ -382,3 +382,12 @@ tbody tr td{
 }
 
 /* --------X-------- Loader --------X-------- */
+
+
+
+.animate-left.in-view{
+    animation: comeFromLeft 1.5s;
+}
+.animate-right.in-view{
+    animation: comeFromRight 1.5s;
+}

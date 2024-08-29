@@ -18,6 +18,7 @@ html{
     
     background-color:var(--secondary-color);
     height:100%;
+    color: var(--second-bg);
   }
 
   .flex-column {
@@ -36,7 +37,7 @@ html{
     
   
     .image-upload{
-  
+    margin: 0 auto;
       height:200px;
       width:200px;
       border-radius: 100px;
@@ -53,6 +54,7 @@ html{
       transition: all 1s;
       color: var(--main-bg);
       font-size:100px;
+      
   
       input[type='file']{
   
@@ -87,15 +89,17 @@ html{
   }
   #submitImg{
     display: none;
-    width: 6rem;
-    height: 3rem;
+    width: 10rem;
+    height: 4rem;
+    font-size: 1.5rem;
     border: none;
     border: 1px solid var(--main-bg);
-    border-radius: 1rem;
+    border-radius: 0.5rem;
     background: var(--secondary-color);
     color: var(--second-bg);
-    margin: 2rem 3rem;
+    margin: 3rem auto;
     cursor: pointer;
+
   }
   #submitImg:hover{
     color: var(--secondary-color);

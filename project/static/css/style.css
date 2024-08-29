@@ -135,6 +135,7 @@
 }
 .single-doctor p{
     color: var(--extra-color);
+    text-align: center;
 }
 .owl-item {
     width: 16rem !important;

@@ -8,6 +8,7 @@ django-allauth==64.1.0
 django-crispy-forms==2.3
 djangorestframework==3.15.2
 idna==3.7
+mysqlclient==2.2.4
 pillow==10.4.0
 pycparser==2.22
 PyJWT==2.9.0
