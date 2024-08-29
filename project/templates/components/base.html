@@ -14,17 +14,44 @@
 
 <body>
 
-    {% include 'components/navbar.html' %}
-
-    {% block content %}
-
-    {% endblock %}
-
-    {% include 'components/footer.html' %}
     
+    <div class="loader-wrap" id="loader">
+        <div class="loader">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+
+    <div id="main" style="display: none;">
+        {% include 'components/navbar.html' %}
+
+        {% block content %}
+
+        {% endblock %}
+
+        {% include 'components/footer.html' %}
+    </div>
+
+
+    <script>
+        // JavaScript to handle the loader and content display
+        document.addEventListener("DOMContentLoaded", function() {
+            setTimeout(function() {
+                // Hide the loader
+                document.getElementById('loader').style.display = 'none';
+                // Show the content
+                document.getElementById('main').style.display = 'contents';
+            }, 1500); // 3000 milliseconds = 3 seconds
+        });
+    </script>
+
     {% block bottom %}
 
     {% endblock %}
+
+
 
 
 
