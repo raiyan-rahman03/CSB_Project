@@ -100,7 +100,6 @@ We plan to advance our platform with the following innovations:
 - [Md Raiyan Rahman](https://www.linkedin.com/in/md-raiyan-rahman-6420982b9/)
 - [Black 2.o(Shahidullah)](https://www.linkedin.com/in/black2o-sh/)
 - [Miraj]()
-- [Raiyan]() **Starting With Us As Our Team But Stop Working For His Personal Problem**
 
 ## Try it out
 

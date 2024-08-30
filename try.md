@@ -64,7 +64,7 @@ Follow these steps to set up and run the project on your local machine.
 Use the following credentials to log in to the admin panel:
 
 **Username:** `admin`  
-**Password:** `adminpassword`
+**Password:** `123`
 
 
 ---
