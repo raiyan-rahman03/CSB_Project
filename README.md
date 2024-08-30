@@ -46,6 +46,19 @@ To address these issues, we envisioned a platform designed to make **healthcare 
 - **<u>Worldwide Access</u>**: Connect with specialists globally through video consultations, bridging geographical gaps and making expert medical advice accessible to those in remote or underserved areas.
 
 
+## Social Impact
+
+Our platform is transforming healthcare with significant social impact:
+
+- **Improved Access:** Global connectivity enables individuals in remote areas to consult with top specialists, breaking down geographical barriers to quality care.
+- **Empowered Patients:** Advanced data visualization turns complex medical information into clear, actionable insights, helping patients make informed health decisions.
+- **Streamlined Processes:** Automated report processing and data extraction reduce administrative burdens and errors, improving efficiency for patients and providers.
+- **Timely Diagnosis:** AI-driven symptom recommendations ensure patients are referred to the right specialists, facilitating accurate and timely diagnoses.
+- **Secure Tracking:** Secure storage and continuous tracking of medical reports ensure reliable access to historical data, supporting long-term health management.
+- **Global Collaboration:** Real-time video consultations foster international medical expertise exchange, advancing global health practices.
+
+By making healthcare more accessible and efficient, we are creating a more inclusive and responsive system for everyone.
+
  ## What We Use:
 -    **[+]** Innovation : **Healthcare**
 -    **[+]** Functionality : AI & Machine Learning Part || Web - Backend || Web - Forntend
