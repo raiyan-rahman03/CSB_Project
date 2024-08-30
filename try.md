@@ -29,9 +29,9 @@ Follow these steps to set up and run the project on your local machine.
 
 4. Database
 
-    Use The db.sql in mysql which is availale project dict. You need to start this additionally.Here is Credintial about that.
--    **Username:** `root`  
--    **Password:** `root123`
+    Use The db.sql in mysql which is availale Our Information Directory. You need to start this additionally.Here is Credintial about that.
+-    **Username:** `On Your Own`  
+-    **Password:** `On Your Own`
 
 
 ## Running the Server
