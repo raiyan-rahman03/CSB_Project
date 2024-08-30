@@ -11,12 +11,12 @@ Follow these steps to set up and run the project on your local machine.
 ## Installation
 1. Clone the Repository
     ```bash
-    git clone <your-repo-url>
+    git clone https://github.com/raiyan-rahman03/CSB_Project
     ```
 2. Navigate to the Project Directory
 
    ```bash
-    cd <your-project-directory>
+    cd project
     ```
 
 3. Install Dependencies
