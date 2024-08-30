@@ -3,145 +3,174 @@
 
 {% block title %}MedVisual{% endblock %}
 
-
 {% block add_top %}
 <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
 <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}">
 {% endblock %}
 
-
 {% block content %}
 <header>
-        <div class="header flex-row container bottom-nav">
-            <div class="content-side two-side-div section-animate animate-left">
-                <h1 class="top-fonts">
-                    Med Visual
-                </h1>
-                <p>
-                    Empowering doctors with real-time disease insights and personalized
-                    feedback, while providing users with clear visual data and direct
-                    access to medical expertise.
-                </p>
-                <button class="btn">
-                    <a href="http://127.0.0.1:8000/upload">Start Now</a>
-                </button>
-            </div>
-            <div class="image-side two-side-div section-animate animate-right">
-                <img src="{% static 'images/header.jpg' %}" alt="Home Header">
-            </div>
+    <div class="header flex-row container bottom-nav">
+        <div class="content-side two-side-div section-animate animate-left">
+            <h1 class="top-fonts">Med Visual</h1>
+            <p>
+                Empowering doctors with real-time disease insights and personalized
+                feedback, while providing users with clear visual data and direct
+                access to medical expertise.
+            </p>
+            <button class="btn">
+                <a href="http://127.0.0.1:8000/upload">Start Now</a>
+            </button>
         </div>
-    </header>
-
-    <section id="book-apoinment" class="container">
-        <div class="book-apoinment-wrapper flex-column">
-            <h1 class="top-fonts">Book Appointment</h1>
+        <div class="image-side two-side-div section-animate animate-right">
+            <img src="{% static 'images/header.jpg' %}" alt="Home Header">
+        </div>
+    </div>
+</header>
+<section id="book-apoinment" class="container">
+    <div class="book-apoinment-wrapper flex-column">
+        <h1 class="top-fonts">Book Appointment</h1>
+        <form action="{% url 'book_appointment' %}" method="post">
+            {% csrf_token %}
             <div class="top-appointment-line flex-row space_between">
                 <div class="appoinment-section-wrapper flex-column">
                     <p>Patient's Name</p>
-                    <input type="text">
+                    <input type="text" name="patient_name" value="{{ user.username }}" readonly>
                 </div>
                 <div class="appoinment-section-wrapper flex-column">
                     <p>Doctor's Name</p>
-                    <input type="text">
+                    <select id="doctorDropdown" name="doctor">
+                        {% for doctor in doctors %}
+                            <option value="{{ doctor.id }}">{{ doctor.user.username }} - {{ doctor.specialization }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
                 <div class="appoinment-section-wrapper flex-column">
-                    <p>Number</p>
-                    <input type="text">
+                    <p>Date</p>
+                    <input type="date" name="appointment_date" required>
+                </div>
+                <div class="appoinment-section-wrapper flex-column">
+                    <p>Time</p>
+                    <input type="time" name="appointment_time" required>
                 </div>
             </div>
             <div class="details-appointment-line flex-column">
                 <p>Problem</p>
-                <input type="text">
+                <input type="text" name="problem" required>
             </div>
-            <button class="btn">Send Appoinment</button>
-        </div>
-    </section>
+            <button type="button" id="aiButton" class="btn">Select Doctor by AI</button>
+            <button type="submit" class="btn">Send Appointment</button>
+        </form>
+    </div>
+</section>
 
-    <section id="about-us" class="container flex-row">
-        <div class="image-side two-side-div">
-            <img src="{% static 'images/about-us.png' %}" alt="About Us">
-        </div>
 
-        <div class="content-side two-side-div">
-            <h1 class="top-fonts">About Us</h1>
+<section id="about-us" class="container flex-row">
+    <div class="image-side two-side-div">
+        <img src="{% static 'images/about-us.png' %}" alt="About Us">
+    </div>
+
+    <div class="content-side two-side-div">
+        <h1 class="top-fonts">About Us</h1>
+        <p>
+            At MedVisual, we are dedicated to enhancing healthcare through innovative technology. Our platform empowers doctors with detailed feedback and insights on disease patterns, while providing users with intuitive graphical interfaces to track their health metrics. By facilitating seamless communication between patients and medical professionals, we aim to improve diagnostic accuracy and treatment effectiveness, ensuring better health outcomes for everyone.
+        </p>
+        <button class="btn">
+            <a href="#">Read more</a>
+        </button>
+    </div>
+</section>
+
+<section id="services" class="container">
+    <h1 class="top-write top-fonts">Our Services</h1>
+    <div class="services-wrapper flex-row space_between">
+        <div class="single-service">
+            <div class="single-service-img">
+                <img src="{% static 'images/services/1.png' %}" alt="Service 1">
+            </div>
+            <h3>Streamlined Report Management</h3>
             <p>
-                At MedVisual, we are dedicated to enhancing healthcare through innovative technology. Our platform empowers doctors with detailed feedback and insights on disease patterns, while providing users with intuitive graphical interfaces to track their health metrics. By facilitating seamless communication between patients and medical professionals, we aim to improve diagnostic accuracy and treatment effectiveness, ensuring better health outcomes for everyone.
+                Effortlessly upload medical reports for automatic data extraction, advanced organization, and dynamic visualizations, enhancing clarity and accessibility of medical information.
             </p>
-            <button class="btn">
-                <a href="#">Read more</a>
-            </button>
         </div>
-    </section>
-
-    <section id="services" class="container">
-        <h1 class="top-write top-fonts">Our Services</h1>
-        <div class="services-wrapper flex-row space_between">
-            <div class="single-service">
-                <div class="single-service-img">
-                    <img src="{% static 'images/services/1.png' %}" alt="Service 1">
-                </div>
-                <h3>Streamlined Report Management</h3>
-                <p>
-                    Effortlessly upload medical reports for automatic data extraction, advanced organization, and dynamic visualizations, enhancing clarity and accessibility of medical information.
-                </p>
+        <div class="single-service">
+            <div class="single-service-img">
+                <img src="{% static 'images/services/2.png' %}" alt="Service 2">
             </div>
-            <div class="single-service">
-                <div class="single-service-img">
-                    <img src="{% static 'images/services/2.png' %}" alt="Service 2">
-                </div>
-                <h3>AI-Driven Symptom Analysis & Recommendations</h3>
-                <p>
-                    Get precise medical specialty recommendations based on AI analysis of your symptoms, ensuring efficient guidance to appropriate healthcare with professionals.
-                </p>
+            <h3>AI-Driven Symptom Analysis & Recommendations</h3>
+            <p>
+                Get precise medical specialty recommendations based on AI analysis of your symptoms, ensuring efficient guidance to appropriate healthcare with professionals.
+            </p>
+        </div>
+        <div class="single-service">
+            <div class="single-service-img">
+                <img src="{% static 'images/services/3.png' %}" alt="Service 3">
             </div>
-            <div class="single-service">
-                <div class="single-service-img">
-                    <img src="{% static 'images/services/3.png' %}" alt="Service 3">
+            <h3>Real-Time Consultations & Secure Tracking</h3>
+            <p>
+                Access visualized data during video consultations, benefit from secure storage and continuous health tracking, and connect globally with specialists for accessible and comprehensive care.
+            </p>
+        </div>
+    </div>
+</section>
+
+<section id="doctor" class="container">
+    <h1 class="top-write top-fonts">OUR DOCTORS</h1>
+    <div class="doctor-wrapper space_around flex-row owl-carousel owl-theme" id="owl-demo">
+        {% for doctor in doctors %}
+            <div class="single-doctor">
+                <div class="doctor-image">
+                    <img src="{{ doctor.profile_picture.url }}" alt="Doctor">
                 </div>
-                <h3>Real-Time Consultations & Secure Tracking</h3>
-                <p>
-                    Access visualized data during video consultations, benefit from secure storage and continuous health tracking, and connect globally with specialists for accessible and comprehensive care.
-                </p>
+                <p>{{ doctor.user.get_full_name }}</p>
+                <p>{{ doctor.specialization }}</p>
             </div>
-        </div>
-    </section>
+        {% endfor %}
+    </div>
+</section>
 
-    <section id="doctor" class="container">
-        <h1 class="top-write top-fonts">OUR DOCTORS</h1>
-        <div class="doctor-wrapper space_around flex-row owl-carousel owl-theme" id="owl-demo">
-            {% for doctor in doctors %}
-                <div class="single-doctor">
-                    <div class="doctor-image">
-                        <img src="{{doctor.profile_picture.url}}" alt="Doctor">
-                    </div>
-                    <p>{{doctor.user}}</p>
-                    <p>{{doctor.specialization}}</p>
-                </div>
-            {% endfor %}
-        </div>
-    </section>
+{% endblock %}
 
-    <section id="contact-us" class="container flex-row">
-        <div class="two-side-div">
-            <form action="" class="contact-us">
-                <h1 class="top-fonts">Contact Us</h1>
-                <input type="text" placeholder="Full Name">
-                <input type="email" placeholder="Email">
-                <input type="number" placeholder="Phone Number">
-                <input type="textarea" placeholder="Message">
-                <button class="btn">Send</button>
-            </form>
-        </div>
-        <div class="two-side-div">
-            <img src="{% static 'images/contact-us.png' %}" alt="Contact Us">
-        </div>
-    </section>
-    {% endblock %}
+{% block bottom %}
+<script src="{% static 'javascript/jquery.min.js' %}"></script>
+<script src="{% static 'javascript/owl.carousel.min.js' %}"></script>
+<script src="https://kit.fontawesome.com/2f363fc945.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha512-7eHRwcbYkK4d9g/6tD/mhkf++eoTHwpNM9woBxtPUBWm67zeAfFC+HrdoE2GanKeocly/VxeLvIqwvCdk7qScg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="{% static 'javascript/script.js' %}"></script>
+<script>
+    document.getElementById('aiButton').addEventListener('click', function() {
+        const problem = document.querySelector('input[name="problem"]').value;
 
-    {% block bottom %}
-    <script src="{% static 'javascript/jquery.min.js' %}"></script>
-    <script src="{% static 'javascript/owl.carousel.min.js' %}"></script>
-    <script src="https://kit.fontawesome.com/2f363fc945.js" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha512-7eHRwcbYkK4d9g/6tD/mhkf++eoTHwpNM9woBxtPUBWm67zeAfFC+HrdoE2GanKeocly/VxeLvIqwvCdk7qScg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="{% static 'javascript/script.js' %}"></script>
-    {% endblock %}
+        fetch(`/reco/${encodeURIComponent(problem)}/`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value,
+            },
+            body: JSON.stringify({ problem: problem })
+        })
+        .then(response => response.json())
+        .then(data => {
+            const doctorDropdown = document.getElementById('doctorDropdown');
+            doctorDropdown.innerHTML = '';
+
+            if (data.doctors && data.doctors.length > 0) {
+                data.doctors.forEach(doctor => {
+                    const option = document.createElement('option');
+                    option.value = doctor.id;
+                    option.textContent = doctor.doctor;  // Use doctor name only
+                    doctorDropdown.appendChild(option);
+                });
+            } else {
+                const option = document.createElement('option');
+                option.value = '';
+                option.textContent = 'No doctors found';
+                doctorDropdown.appendChild(option);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+</script>
+
+
+{% endblock %}

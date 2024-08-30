@@ -31,11 +31,14 @@ urlpatterns = [
     path('ch/<int:id>/<str:test_name>',data_representation),
     path('image/<int:id>/<str:name>',report_images),
     path('img',image),
+    path('book-appointment/', book_appointment, name='book_appointment'),
+    path('reco/<str:problem>/', recommend_specialization, name='recommend_specialization'),
   
 
     path('doct/<int:id>',doct),
     #impersonate 
-    path('doc/test_names/<int:user_id>/',impersonate_report_names_get)
+    path('doc/test_names/<int:user_id>/',impersonate_report_names_get),
+    path('a',exm)
 
      #zoom part
     

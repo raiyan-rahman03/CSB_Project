@@ -7,20 +7,23 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 import json
+import os
+
+# Ensure the current working directory is where the script is located
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 nltk.download('stopwords')
 
-df = pd.read_excel('E:\Miraj Shafek things\med depart.xlsx')
+# Load the Excel file with the correct relative path
+df = pd.read_excel('med depart.xlsx')
 
 stop_words = set(stopwords.words('english'))
-
 
 def clean_text(text):
     text = re.sub(r'\W', ' ', text)
     text = text.lower()
     text = ' '.join([word for word in text.split() if word not in stop_words])
     return text
-
 
 df['cleaned_symptoms'] = df['symptoms'].apply(clean_text)
 
@@ -36,14 +39,12 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 model = LogisticRegression()
 model.fit(X_train, y_train)
 
-
 def recommend_doctor(symptoms):
     cleaned_symptoms = clean_text(symptoms)
     transformed_symptoms = vectorizer.transform([cleaned_symptoms])
     predicted_doctor_label = model.predict(transformed_symptoms)
     predicted_doctor = le.inverse_transform(predicted_doctor_label)
     return predicted_doctor[0]
-
 
 if __name__ == "__main__":
 

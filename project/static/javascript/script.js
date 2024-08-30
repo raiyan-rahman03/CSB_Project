@@ -76,13 +76,13 @@ $(document).ready(function(){
 
   tl.from(".content-side", {
       x: -1000,
-      duration: 1.5,
+      duration: 0.7,
       delay: 2,
   })
   
   tl.from(".image-side", {
     x: 1000,
-    duration: 1.5,
+    duration: 1.0,
     delay: 0,
   })
 

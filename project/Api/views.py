@@ -23,6 +23,7 @@ from rest_framework.views import APIView
 from django.shortcuts import render
 from .models import LabReport, LabReportImage
 import json
+from .ml_recog import *
 
 
 
@@ -273,16 +274,16 @@ class DatasetAPIView(APIView):
 
 
 def data_representation(request, id, test_name):
-    user_id = request.user.id  # Get user id to fetch the data
-    print(f"User ID: {user_id}")
-    test_instance = Test.objects.get(user=user_id, name=test_name)
+      # Get user id to fetch the data
+    
+    test_instance = Test.objects.get(user=id, name=test_name)
 
 # Get the id of the test_instance
     test_id = test_instance.id
 
     # Fetch reports for the user and the specific test name
-    reports = LabReport.objects.filter(user=user_id, test_name=test_id)
-    print(f"Reports for user {user_id}: {reports}")
+    reports = LabReport.objects.filter(user=id, test_name=test_id)
+    
 
     combined_report_data = defaultdict(lambda: {"description": "", "result": [
     ], "ref_range": "", "unit": ""})  # initiazing the structure of the response
@@ -425,6 +426,9 @@ def impersonate_report_names_get(request, user_id):
     request.user = target_user
     return report_names_get(request)
 
+#ml connecting part
+
+
 
 
 class ProfileListCreateView(generics.ListCreateAPIView):
@@ -452,12 +456,96 @@ def appointment_render(request):
     return render(request, 'appointment.html')
 
 
+from django.http import JsonResponse
+from django.shortcuts import render
+from .models import Profile
+
+from django.shortcuts import render
+from django.http import JsonResponse
+from .models import Profile
+
+from django.shortcuts import render
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from django.utils.decorators import method_decorator
+from .models import Profile
+# from .ai_model import recommend_doctor  # Import your AI recommendation function
+import json
+def exm(request):
+    problem="i have cough and heart problem"
+    a=recommend_doctor(problem)
+    return print(a)
+
+
+from django.http import JsonResponse
+from .models import Profile
+ # Adjust import based on your project structure
+
+def recommend_specialization(request, problem):
+    recommended_specialization = recommend_doctor(problem)
+    print(recommended_specialization)
+    doctors = Profile.objects.filter(role__icontains="Doctor", specialization=recommended_specialization)
+
+    data = [
+        {
+            "id": doctor.id,
+            "doctor": doctor.user.username,  # Access the username of the related User model
+            "specialization": doctor.specialization,
+        }
+        for doctor in doctors
+    ]
+
+    return JsonResponse({"doctors": data})
+
+
+
+
 def index(request):
     doctor = Profile.objects.filter(role__icontains="Doctor")
     context = {
         "doctors": doctor,
     }
     return render(request, 'index.html', context)
+
+from django.shortcuts import redirect
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
+from .models import Appointment, Profile
+from django.utils.dateparse import parse_date, parse_time
+
+@login_required
+def book_appointment(request):
+    if request.method == "POST":
+        patient = request.user
+        doctor_id = request.POST.get('doctor')
+        appointment_date = request.POST.get('appointment_date')
+        appointment_time = request.POST.get('appointment_time')
+        problem = request.POST.get('problem')
+        
+        try:
+            # Fetch the Profile object for the selected doctor
+            doctor_profile = Profile.objects.get(id=doctor_id)
+            doctor = doctor_profile.user  # Get the associated User object
+        except Profile.DoesNotExist:
+            return HttpResponse("Doctor not found", status=404)
+
+        try:
+            appointment_date = parse_date(appointment_date)
+            appointment_time = parse_time(appointment_time)
+        except (ValueError, TypeError):
+            return HttpResponse("Invalid date or time format", status=400)
+        
+        Appointment.objects.create(
+            patient=patient,
+            doctor=doctor,
+            appointment_date=appointment_date,
+            apointment_time=appointment_time,  # Corrected the typo
+            status='pending'
+        )
+        
+        return redirect('index')  # Redirect to the index page or wherever you want
+
+    return HttpResponse("Invalid request method", status=405)
 
 
 def chat_with_doctor(request):
