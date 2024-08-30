@@ -27,7 +27,7 @@ Follow these steps to set up and run the project on your local machine.
     pip install -r requirements.txt
     ```
 
-4.Database
+4. Database
 
     Use The db.sql in mysql which is availale project dict. You need to start this additionally.Here is Credintial about that.
 -    **Username:** `root`  
