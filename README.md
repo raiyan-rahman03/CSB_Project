@@ -1,4 +1,7 @@
-# **Transforming Health Through Data Insights**
+# **MedVisual**
+## **Motive** : *Transforming Health Through Data Insights*
+
+[TRY](https://github.com/raiyan-rahman03/CSB_Project/blob/main/try.md)
 
 ## **<u>Our Sector:</u>**
 - Healthcare
@@ -7,7 +10,7 @@
 
 
 
-## Inspirations
+## What Make Us Inspired To Do This 
 
 Every year, millions of lives are at risk due to diagnostic errors, accounting for about 10% of all patient deaths worldwide. The World Health Organization estimates that these errors contribute to millions of cases of harm annually and up to **2.6 million** deaths in low- and middle-income countries. In developing regions, where access to experienced **healthcare professionals** is limited, these issues are even more pronounced. The loss or misplacement of lab reports can exacerbate these challenges, turning a difficult situation into a life-threatening one.
 
@@ -16,7 +19,7 @@ Every year, millions of lives are at risk due to diagnostic errors, accounting f
 To address these issues, we envisioned a platform designed to make **healthcare more accessible, reliable, and effective**. Our solution securely stores medical reports, provides real-time access, and utilizes clear **graphical analysis**, various metrics, and raw images. This approach enables doctors to view and discuss reports during video consultations, facilitating accurate and comprehensive evaluations without the need for costly and time-consuming travel.
 
 
-## What It Does
+## What It Does 
 
 **Our platform revolutionizes healthcare management by offering a seamless and efficient approach to processing medical reports and facilitating consultations. Key features include:**
 
@@ -65,6 +68,10 @@ To address these issues, we envisioned a platform designed to make **healthcare 
 
 1. **OCR Technology Implementation**: Faced difficulties with accuracy and compatibility of various OCR solutions. Resolved by choosing Asprise OCR API, which provided the necessary precision.
 2. **Video Chat Integration**: Encountered challenges with Zoom’s API documentation and authentication. Successfully integrated ZEGOCLOUD’s video call functionality as an alternative.
+3. **Team Availability and Coordination:** A team member was unable to continue with the project for his personal problem, impacting our timeline. We managed this by reallocating their tasks and improving our communication to stay on track.
+
+
+
 
 ## Accomplishments We’re Proud Of
 
@@ -97,7 +104,7 @@ We plan to advance our platform with the following innovations:
 
 ## Try it out
 
-For Instructions On How To Get Started, Please Go To The [TRY](try.md) file.
+For Instructions On How To Get Started, Please Go To The [TRY](https://github.com/raiyan-rahman03/CSB_Project/blob/main/try.md) file.
 
 
 
